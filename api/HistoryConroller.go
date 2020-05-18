@@ -1,9 +1,8 @@
 package api
 
 import (
-	"fmt"
+	"gindemo/api/ServiceModel"
 	"github.com/gin-gonic/gin"
-	"io/ioutil"
 )
 
 func HistoryConroller(group *gin.Engine) {
@@ -21,11 +20,13 @@ func HistoryConroller(group *gin.Engine) {
 历史详细信息
 */
 func info(c *gin.Context) {
-	body, _ := ioutil.ReadAll(c.Request.Body)
-	fmt.Println(string(body))
+	postBody, err := ServiceModel.Convert(c, &ServiceModel.PostBody{Body: &ServiceModel.InfoHistoryParameter{}})
+	if err != nil {
+		panic(err)
+	}
 
 	c.JSON(200, gin.H{
-		"message": "info",
+		"body": postBody,
 	})
 }
 
@@ -33,8 +34,13 @@ func info(c *gin.Context) {
 提交历史信息
 */
 func submit(c *gin.Context) {
+	postBody, err := ServiceModel.Convert(c, &ServiceModel.PostBody{Body: &ServiceModel.SubmitHistoryParameter{}})
+	if err != nil {
+		panic(err)
+	}
+
 	c.JSON(200, gin.H{
-		"message": "submit",
+		"body": postBody,
 	})
 }
 
@@ -42,8 +48,13 @@ func submit(c *gin.Context) {
 历史分页
 */
 func list(c *gin.Context) {
+	postBody, err := ServiceModel.Convert(c, &ServiceModel.PostBody{Body: &ServiceModel.ListHistoryParameter{}})
+	if err != nil {
+		panic(err)
+	}
+
 	c.JSON(200, gin.H{
-		"message": "list",
+		"body": postBody,
 	})
 }
 
@@ -51,8 +62,13 @@ func list(c *gin.Context) {
 清空
 */
 func clear(c *gin.Context) {
+	postBody, err := ServiceModel.Convert(c, &ServiceModel.PostBody{Body: &ServiceModel.ClearHistoryParameter{}})
+	if err != nil {
+		panic(err)
+	}
+
 	c.JSON(200, gin.H{
-		"message": "clear",
+		"body": postBody,
 	})
 }
 
@@ -60,7 +76,12 @@ func clear(c *gin.Context) {
 删除具体的历史信息
 */
 func delete(c *gin.Context) {
+	postBody, err := ServiceModel.Convert(c, &ServiceModel.PostBody{Body: &ServiceModel.DeleteHistoryParameter{}})
+	if err != nil {
+		panic(err)
+	}
+
 	c.JSON(200, gin.H{
-		"message": "delete",
+		"body": postBody,
 	})
 }
