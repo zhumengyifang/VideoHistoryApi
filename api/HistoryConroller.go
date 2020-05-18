@@ -2,6 +2,7 @@ package api
 
 import (
 	"gindemo/api/ServiceModel"
+	"gindemo/internal"
 	"github.com/gin-gonic/gin"
 )
 
@@ -25,8 +26,11 @@ func info(c *gin.Context) {
 		panic(err)
 	}
 
+	body := (postBody.Body).(*ServiceModel.InfoHistoryParameter)
+	result, err := internal.GetInfo(body)
+
 	c.JSON(200, gin.H{
-		"body": postBody,
+		"body": result,
 	})
 }
 
@@ -35,6 +39,13 @@ func info(c *gin.Context) {
 */
 func submit(c *gin.Context) {
 	postBody, err := ServiceModel.Convert(c, &ServiceModel.PostBody{Body: &ServiceModel.SubmitHistoryParameter{}})
+	if err != nil {
+		panic(err)
+	}
+
+	body := (postBody.Body).(*ServiceModel.SubmitHistoryParameter)
+
+	err = internal.SubmitInfo(body)
 	if err != nil {
 		panic(err)
 	}

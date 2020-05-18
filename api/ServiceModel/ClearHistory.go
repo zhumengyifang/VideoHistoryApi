@@ -5,6 +5,6 @@ type ClearHistoryParameter struct {
 	OpenId string `json:"openId"`
 }
 
-type HistoryClearResponse struct {
+type ClearHistoryResponse struct {
 	Count string `json:"count"`
 }

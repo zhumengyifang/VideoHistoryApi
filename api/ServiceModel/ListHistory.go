@@ -8,9 +8,9 @@ type ListHistoryParameter struct {
 	PageSize  int `json:"pageSize"`
 }
 
-type HistoryListResponse struct {
+type ListHistoryResponse struct {
 	PageCount int `json:"pageCount"`
 	PageSize  int `json:"pageSize"`
 
-	Videos []HistoryInfoResponse `json:"videos"`
+	Videos []InfoHistoryResponse `json:"videos"`
 }

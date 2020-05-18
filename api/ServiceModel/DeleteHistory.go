@@ -7,7 +7,7 @@ type DeleteHistoryParameter struct {
 	VideoIds []string `json:"videoIds"`
 }
 
-type HistoryDeleteResponse struct {
+type DeleteHistoryResponse struct {
 	//用户唯一标识
 	OpenId string `json:"openId"`
 	//删除数量

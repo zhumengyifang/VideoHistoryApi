@@ -7,7 +7,7 @@ type InfoHistoryParameter struct {
 	VideoId string `json:"videoId"`
 }
 
-type HistoryInfoResponse struct {
+type InfoHistoryResponse struct {
 	////用户唯一标识
 	OpenId string `json:"openId"`
 	//视频唯一标识
