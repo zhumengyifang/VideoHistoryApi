@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"gindemo/api/Controllers"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -13,10 +14,9 @@ import (
 /**
 api初始化
 */
-func ApiInit() {
+func init() {
 	router := gin.Default()
-
-	HistoryConroller(router)
+	Router(router)
 
 	srv := &http.Server{
 		Addr:    ":8080",
@@ -41,4 +41,8 @@ func ApiInit() {
 		log.Fatal("Server Shutdown:", err)
 	}
 	log.Println("Server exiting")
+}
+
+func Router(router *gin.Engine) {
+	Controllers.History(router)
 }

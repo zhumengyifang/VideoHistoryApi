@@ -1,12 +1,9 @@
 package main
 
-import "gindemo/api"
-
-type Host struct {
-	IP   string
-	Name string
-}
+import (
+	_ "gindemo/api"
+)
 
 func main() {
-	api.ApiInit()
+
 }
