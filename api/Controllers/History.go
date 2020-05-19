@@ -2,10 +2,12 @@ package Controllers
 
 import (
 	"errors"
+	"fmt"
 	"gindemo/api/ApiUtil"
 	"gindemo/api/ServiceModel"
 	"gindemo/internal/Domain"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 func History(router *gin.Engine) {
@@ -23,7 +25,8 @@ func History(router *gin.Engine) {
 历史详细信息
 */
 func info(c *gin.Context) {
-	postBody, err := Convert(c, &ServiceModel.PostBody{Body: &ServiceModel.InfoHistoryParameter{}})
+	postBody := &ServiceModel.PostBody{Body: &ServiceModel.InfoHistoryParameter{}}
+	err := c.Bind(&postBody)
 	if err != nil {
 		HandelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertPostBodyErr")))
 		return
@@ -43,7 +46,8 @@ func info(c *gin.Context) {
 提交历史信息
 */
 func submit(c *gin.Context) {
-	postBody, err := Convert(c, &ServiceModel.PostBody{Body: &ServiceModel.SubmitHistoryParameter{}})
+	postBody := &ServiceModel.PostBody{Body: &ServiceModel.SubmitHistoryParameter{}}
+	err := c.Bind(&postBody)
 	if err != nil {
 		HandelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertPostBodyErr")))
 		return
@@ -63,40 +67,37 @@ func submit(c *gin.Context) {
 历史分页
 */
 func list(c *gin.Context) {
-	postBody, err := Convert(c, &ServiceModel.PostBody{Body: &ServiceModel.ListHistoryParameter{}})
+	postBody := &ServiceModel.PostBody{Body: &ServiceModel.ListHistoryParameter{}}
+	err := c.Bind(&postBody)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 
-	c.JSON(200, gin.H{
-		"body": postBody,
-	})
+	c.JSON(http.StatusOK, postBody)
 }
 
 /**
 清空
 */
 func clear(c *gin.Context) {
-	postBody, err := Convert(c, &ServiceModel.PostBody{Body: &ServiceModel.ClearHistoryParameter{}})
+	postBody := &ServiceModel.PostBody{Body: &ServiceModel.ClearHistoryParameter{}}
+	err := c.Bind(&postBody)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 
-	c.JSON(200, gin.H{
-		"body": postBody,
-	})
+	c.JSON(http.StatusOK, postBody)
 }
 
 /**
 删除具体的历史信息
 */
 func del(c *gin.Context) {
-	postBody, err := Convert(c, &ServiceModel.PostBody{Body: &ServiceModel.DeleteHistoryParameter{}})
+	postBody := &ServiceModel.PostBody{Body: &ServiceModel.DeleteHistoryParameter{}}
+	err := c.Bind(&postBody)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 
-	c.JSON(200, gin.H{
-		"body": postBody,
-	})
+	c.JSON(http.StatusOK, postBody)
 }

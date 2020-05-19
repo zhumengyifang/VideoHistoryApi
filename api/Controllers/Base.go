@@ -5,6 +5,7 @@ import (
 	"gindemo/api/ServiceModel"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
+	"net/http"
 )
 
 func Convert(c *gin.Context, postBody *ServiceModel.PostBody) (*ServiceModel.PostBody, error) {
@@ -22,13 +23,9 @@ func Convert(c *gin.Context, postBody *ServiceModel.PostBody) (*ServiceModel.Pos
 
 func HandelError(c *gin.Context, responseBody ServiceModel.ResponseBody) {
 	if !responseBody.Header.IsSuccess {
-		c.JSON(200, gin.H{
-			"body": responseBody,
-		})
+		c.JSON(http.StatusOK, responseBody)
 		return
 	}
 
-	c.JSON(200, gin.H{
-		"body": responseBody,
-	})
+	c.JSON(http.StatusOK, responseBody)
 }
