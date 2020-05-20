@@ -12,5 +12,5 @@ type ListHistoryResponse struct {
 	PageCount int `json:"pageCount"`
 	PageSize  int `json:"pageSize"`
 
-	Videos []InfoHistoryResponse `json:"videos"`
+	Videos *[]InfoHistoryResponse `json:"videos"`
 }

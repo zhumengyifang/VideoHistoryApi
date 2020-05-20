@@ -10,7 +10,7 @@ type SubmitHistoryParameter struct {
 	//视频作者
 	AuthorName string `json:"authorName"`
 	//视频标签
-	Title []string `json:"title"`
+	Title *[]string `json:"title"`
 	//封面url
 	CoverUrl string `json:"coverUrl"`
 }
