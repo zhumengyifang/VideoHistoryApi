@@ -2,6 +2,7 @@ package RedisUtil
 
 import (
 	"encoding/json"
+	"fmt"
 	"gindemo/api/ServiceModel"
 	"gindemo/internal/RedisUtil/RedisModel"
 	"github.com/garyburd/redigo/redis"
@@ -84,44 +85,56 @@ func GetInfo(parameter *ServiceModel.InfoHistoryParameter) (*RedisModel.HistoryI
 	return result, nil
 }
 
-func GetInfos(parameter *ServiceModel.DeleteHistoryParameter) (*[]RedisModel.HistoryInfoParameter, error) {
+//func GetALl(parameter *ServiceModel.DeleteHistoryParameter) ([]*RedisModel.HistoryInfoParameter, error) {
+//	conn := pool.Get()
+//	defer conn.Close()
+//
+//	values, err := redis.Values(conn.Do("HVALS", parameter.OpenId))
+//	if err != nil {
+//		return nil, err
+//	}
+//
+//	var infos []*RedisModel.HistoryInfoParameter
+//	for _, v := range values {
+//		result := new(RedisModel.HistoryInfoParameter)
+//		if err = json.Unmarshal(v.([]uint8), result); err != nil {
+//			fmt.Println(err)
+//		}
+//		infos = append(infos, result)
+//	}
+//
+//	return infos, nil
+//}
+
+func GetALl(key string) (map[string]*RedisModel.HistoryInfoParameter, error) {
 	conn := pool.Get()
 	defer conn.Close()
 
-	var keys []string
-	keys = append(keys, "world")
-	keys = append(keys, "world1")
-
-	_, err := conn.Do("HMGet", parameter.OpenId, keys)
+	values, err := redis.Values(conn.Do("HVALS", key))
 	if err != nil {
 		return nil, err
 	}
 
-	var infos *[]RedisModel.HistoryInfoParameter
-	//for _, v := range values {
-	//	//result := new(RedisModel.HistoryInfoParameter)
-	//	//if err = json.Unmarshal(v, result); err != nil {
-	//	//	return nil, err
-	//	//}
-	//	fmt.Println(v)
-	//}
+	infos := make(map[string]*RedisModel.HistoryInfoParameter)
+	for _, v := range values {
+		result := new(RedisModel.HistoryInfoParameter)
+		if err = json.Unmarshal(v.([]uint8), result); err != nil {
+			fmt.Println(err)
+		}
+		infos[result.VideoId] = result
+	}
 
 	return infos, nil
 }
 
-func GetALl(parameter *ServiceModel.InfoHistoryParameter) (*RedisModel.HistoryInfoParameter, error) {
+func Del(key string, isDel map[string][]byte) error {
 	conn := pool.Get()
 	defer conn.Close()
 
-	v, err := redis.Bytes(conn.Do("HGetAll", parameter.OpenId, parameter.VideoId))
+	_, err := conn.Do("HMSet", redis.Args{}.Add(key).AddFlat(isDel)...)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	result := new(RedisModel.HistoryInfoParameter)
-	if err = json.Unmarshal(v, result); err != nil {
-		return nil, err
-	}
-
-	return result, nil
+	return nil
 }

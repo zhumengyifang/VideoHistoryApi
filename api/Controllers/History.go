@@ -107,14 +107,14 @@ func clear(c *gin.Context) {
 删除具体的历史信息
 */
 func del(c *gin.Context) {
-	postBody := &ServiceModel.PostBody{Body: &ServiceModel.DeleteHistoryParameter{}}
+	postBody := &ServiceModel.PostBody{Body: &ServiceModel.DelHistoryParameter{}}
 	err := c.Bind(&postBody)
 	if err != nil {
 		HandelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertPostBodyErr")))
 		return
 	}
 
-	body, ok := (postBody.Body).(*ServiceModel.DeleteHistoryParameter)
+	body, ok := (postBody.Body).(*ServiceModel.DelHistoryParameter)
 	if !ok {
 		HandelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertBodyErr")))
 		return

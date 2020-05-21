@@ -6,5 +6,5 @@ type ClearHistoryParameter struct {
 }
 
 type ClearHistoryResponse struct {
-	Count string `json:"count"`
+	Count int `json:"count"`
 }
