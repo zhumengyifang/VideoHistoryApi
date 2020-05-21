@@ -85,27 +85,6 @@ func GetInfo(parameter *ServiceModel.InfoHistoryParameter) (*RedisModel.HistoryI
 	return result, nil
 }
 
-//func GetALl(parameter *ServiceModel.DeleteHistoryParameter) ([]*RedisModel.HistoryInfoParameter, error) {
-//	conn := pool.Get()
-//	defer conn.Close()
-//
-//	values, err := redis.Values(conn.Do("HVALS", parameter.OpenId))
-//	if err != nil {
-//		return nil, err
-//	}
-//
-//	var infos []*RedisModel.HistoryInfoParameter
-//	for _, v := range values {
-//		result := new(RedisModel.HistoryInfoParameter)
-//		if err = json.Unmarshal(v.([]uint8), result); err != nil {
-//			fmt.Println(err)
-//		}
-//		infos = append(infos, result)
-//	}
-//
-//	return infos, nil
-//}
-
 func GetALl(key string) (map[string]*RedisModel.HistoryInfoParameter, error) {
 	conn := pool.Get()
 	defer conn.Close()
