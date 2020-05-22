@@ -19,11 +19,11 @@ func Info(body *ServiceModel.InfoHistoryParameter) *ServiceModel.ResponseBody {
 		return ApiUtil.BuildErrorApiResponse(200, errors.New("TheVideoHasBeenDeleted"))
 	}
 
-	return ApiUtil.BuildApiResponse(ConvertModel.ConverGetInfoServiceModel(result))
+	return ApiUtil.BuildApiResponse(ConvertModel.ConvertGetInfoServiceModel(result))
 }
 
 func Submit(body *ServiceModel.SubmitHistoryParameter) *ServiceModel.ResponseBody {
-	err := RedisUtil.SubmitInfo(ConvertModel.ConverSubmitHistoryRedisModel(body))
+	err := RedisUtil.SubmitInfo(ConvertModel.ConvertSubmitHistoryRedisModel(body))
 	if err != nil {
 		return ApiUtil.BuildErrorApiResponse(500, errors.New("GetInfoErr"))
 	}

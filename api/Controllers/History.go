@@ -8,8 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func History(router *gin.Engine) {
-	historyGroup := router.Group("/history")
+func History(engine *gin.Engine) {
+	historyGroup := engine.Group("/history")
 	{
 		historyGroup.POST("/info", info)
 		historyGroup.POST("/submit", submit)

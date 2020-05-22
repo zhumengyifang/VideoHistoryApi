@@ -2,8 +2,10 @@ package api
 
 import (
 	"context"
+	"fmt"
 	"gindemo/api/Controllers"
 	"github.com/gin-gonic/gin"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -17,14 +19,16 @@ const bearerToken = "Bearer welcome"
 api初始化
 */
 func init() {
-	router := gin.Default()
+	engine := gin.Default()
 
-	router.Use(Validate())
-	Router(router)
+	engine.Use(validate())
+	engine.Use(logger())
+
+	Router(engine)
 
 	srv := &http.Server{
 		Addr:    ":8080",
-		Handler: router,
+		Handler: engine,
 	}
 
 	go func() {
@@ -47,7 +51,7 @@ func init() {
 	log.Println("Server exiting")
 }
 
-func Validate() gin.HandlerFunc {
+func validate() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if bearerToken != c.Request.Header.Get("Authorization") {
 			c.Abort()
@@ -56,6 +60,39 @@ func Validate() gin.HandlerFunc {
 	}
 }
 
-func Router(router *gin.Engine) {
-	Controllers.History(router)
+func logger() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// 开始时间
+		startTime := time.Now()
+
+		// 处理请求
+		c.Next()
+
+		// 结束时间
+		endTime := time.Now()
+
+		// 执行时间
+		latencyTime := endTime.Sub(startTime)
+
+		// 请求方式
+		reqMethod := c.Request.Method
+
+		// 请求路由
+		reqUri := c.Request.RequestURI
+
+		// 状态码
+		statusCode := c.Writer.Status()
+
+		// 请求IP
+		clientIP := c.ClientIP()
+
+		requestBody := c.Request.Body
+		body, _ := ioutil.ReadAll(c.Request.Body)
+		
+		fmt.Println(latencyTime, reqMethod, reqUri, statusCode, clientIP, requestBody,body)
+	}
+}
+
+func Router(engine *gin.Engine) {
+	Controllers.History(engine)
 }

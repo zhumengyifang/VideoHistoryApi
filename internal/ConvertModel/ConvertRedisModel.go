@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func ConverSubmitHistoryRedisModel(parameter *ServiceModel.SubmitHistoryParameter) *RedisModel.HistoryInfoParameter {
+func ConvertSubmitHistoryRedisModel(parameter *ServiceModel.SubmitHistoryParameter) *RedisModel.HistoryInfoParameter {
 	if parameter == nil {
 		return nil
 	}

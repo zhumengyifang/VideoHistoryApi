@@ -5,7 +5,7 @@ import (
 	"gindemo/internal/RedisUtil/RedisModel"
 )
 
-func ConverGetInfoServiceModel(parameter *RedisModel.HistoryInfoParameter) *ServiceModel.InfoHistoryResponse {
+func ConvertGetInfoServiceModel(parameter *RedisModel.HistoryInfoParameter) *ServiceModel.InfoHistoryResponse {
 	if parameter == nil {
 		return nil
 	}
