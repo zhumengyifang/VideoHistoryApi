@@ -16,7 +16,7 @@ func Info(body *ServiceModel.InfoHistoryParameter) *ServiceModel.ResponseBody {
 	}
 
 	if result != nil && result.IsDelete {
-		return ApiUtil.BuildErrorApiResponse(500, errors.New("TheVideoHasBeenDeleted"))
+		return ApiUtil.BuildErrorApiResponse(200, errors.New("TheVideoHasBeenDeleted"))
 	}
 
 	return ApiUtil.BuildApiResponse(ConvertModel.ConverGetInfoServiceModel(result))
@@ -79,6 +79,7 @@ func Del(body *ServiceModel.DelHistoryParameter) *ServiceModel.ResponseBody {
 
 		value := infos[v]
 		if value.IsDelete {
+			result.DeleteInfo[v] = true
 			continue
 		}
 

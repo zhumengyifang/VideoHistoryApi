@@ -11,11 +11,15 @@ import (
 	"time"
 )
 
+const bearerToken = "Bearer welcome"
+
 /**
 api初始化
 */
 func init() {
 	router := gin.Default()
+
+	router.Use(Validate())
 	Router(router)
 
 	srv := &http.Server{
@@ -41,6 +45,15 @@ func init() {
 		log.Fatal("Server Shutdown:", err)
 	}
 	log.Println("Server exiting")
+}
+
+func Validate() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if bearerToken != c.Request.Header.Get("Authorization") {
+			c.Abort()
+			c.JSON(http.StatusUnauthorized, nil)
+		}
+	}
 }
 
 func Router(router *gin.Engine) {

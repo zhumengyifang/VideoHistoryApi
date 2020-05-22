@@ -107,6 +107,10 @@ func GetALl(key string) (map[string]*RedisModel.HistoryInfoParameter, error) {
 }
 
 func Del(key string, isDel map[string][]byte) error {
+	if len(isDel) == 0 {
+		return nil
+	}
+
 	conn := pool.Get()
 	defer conn.Close()
 
