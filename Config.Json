@@ -1,0 +1,14 @@
+{
+  "apiBearerToken": "Bearer welcome",
+  "apiPort": 8080,
+  "redis": {
+    "ipAddress": "192.168.170.137:6379",
+    "password": "myredis123",
+    "protocolType": "tcp",
+    "maxIdle": 10,
+    "idleTimeout": 240
+  },
+  "mongo": {
+    "mongoAddr": "192.168.170.137"
+  }
+}

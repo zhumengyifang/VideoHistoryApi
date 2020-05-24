@@ -3,18 +3,11 @@ package RedisUtil
 import (
 	"encoding/json"
 	"fmt"
+	"gindemo/internal/Config"
 	"gindemo/internal/Model/RedisModel"
 	"gindemo/internal/Model/ServiceModel"
 	"github.com/garyburd/redigo/redis"
 	"time"
-)
-
-const (
-	MaxIdle      = 10
-	IdleTimeout  = 240 * time.Second
-	ipAddress    = "192.168.170.137:6379"
-	protocolType = "tcp"
-	passWord     = "myredis123"
 )
 
 var pool *redis.Pool
@@ -28,9 +21,14 @@ func init() {
 */
 func newPool() *redis.Pool {
 	return &redis.Pool{
-		MaxIdle:     MaxIdle,
-		IdleTimeout: IdleTimeout,
-		Dial:        func() (redis.Conn, error) { return redis.Dial(protocolType, ipAddress, redis.DialPassword(passWord)) },
+		MaxIdle:     Config.GetRedis().MaxIdle,
+		IdleTimeout: time.Duration(Config.GetRedis().IdleTimeout) * time.Second,
+		Dial: func() (redis.Conn, error) {
+			return redis.Dial(
+				Config.GetRedis().ProtocolType,
+				Config.GetRedis().IPAddress,
+				redis.DialPassword(Config.GetRedis().Password))
+		},
 	}
 }
 

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"gindemo/api/Controllers"
+	"gindemo/internal/Config"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"log"
@@ -12,8 +13,6 @@ import (
 	"os/signal"
 	"time"
 )
-
-const bearerToken = "Bearer welcome"
 
 /**
 api初始化
@@ -27,7 +26,7 @@ func init() {
 	Router(engine)
 
 	srv := &http.Server{
-		Addr:    ":8080",
+		Addr:    Config.GetAPIPort(),
 		Handler: engine,
 	}
 
@@ -53,7 +52,7 @@ func init() {
 
 func validate() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		if bearerToken != c.Request.Header.Get("Authorization") {
+		if Config.GetAPIBearerToken() != c.Request.Header.Get("Authorization") {
 			c.Abort()
 			c.JSON(http.StatusUnauthorized, nil)
 		}
