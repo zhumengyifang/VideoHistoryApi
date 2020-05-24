@@ -26,16 +26,16 @@ func info(c *gin.Context) {
 	postBody := &ServiceModel.PostBody{Body: &ServiceModel.InfoHistoryParameter{}}
 	err := c.Bind(&postBody)
 	if err != nil {
-		HandelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertPostBodyErr")))
+		handelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertPostBodyErr")))
 	}
 
 	body, ok := (postBody.Body).(*ServiceModel.InfoHistoryParameter)
 	if !ok {
-		HandelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertBodyErr")))
+		handelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertBodyErr")))
 	}
 
 	responseBody := Domain.Info(body)
-	HandelError(c, *responseBody)
+	handelError(c, *responseBody)
 }
 
 /**
@@ -45,16 +45,16 @@ func submit(c *gin.Context) {
 	postBody := &ServiceModel.PostBody{Body: &ServiceModel.SubmitHistoryParameter{}}
 	err := c.Bind(&postBody)
 	if err != nil {
-		HandelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertPostBodyErr")))
+		handelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertPostBodyErr")))
 	}
 
 	body, ok := (postBody.Body).(*ServiceModel.SubmitHistoryParameter)
 	if !ok {
-		HandelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertBodyErr")))
+		handelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertBodyErr")))
 	}
 
 	responseBody := Domain.Submit(body)
-	HandelError(c, *responseBody)
+	handelError(c, *responseBody)
 }
 
 /**
@@ -64,16 +64,16 @@ func list(c *gin.Context) {
 	postBody := &ServiceModel.PostBody{Body: &ServiceModel.ListHistoryParameter{}}
 	err := c.Bind(&postBody)
 	if err != nil {
-		HandelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertPostBodyErr")))
+		handelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertPostBodyErr")))
 	}
 
 	body, ok := (postBody.Body).(*ServiceModel.ListHistoryParameter)
 	if !ok {
-		HandelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertBodyErr")))
+		handelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertBodyErr")))
 	}
 
 	responseBody := Domain.List(body)
-	HandelError(c, *responseBody)
+	handelError(c, *responseBody)
 }
 
 /**
@@ -83,16 +83,16 @@ func del(c *gin.Context) {
 	postBody := &ServiceModel.PostBody{Body: &ServiceModel.DelHistoryParameter{}}
 	err := c.Bind(&postBody)
 	if err != nil {
-		HandelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertPostBodyErr")))
+		handelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertPostBodyErr")))
 	}
 
 	body, ok := (postBody.Body).(*ServiceModel.DelHistoryParameter)
 	if !ok {
-		HandelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertBodyErr")))
+		handelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertBodyErr")))
 	}
 
 	responseBody := Domain.Del(body)
-	HandelError(c, *responseBody)
+	handelError(c, *responseBody)
 }
 
 /**
@@ -102,14 +102,14 @@ func clear(c *gin.Context) {
 	postBody := &ServiceModel.PostBody{Body: &ServiceModel.ClearHistoryParameter{}}
 	err := c.Bind(&postBody)
 	if err != nil {
-		HandelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertPostBodyErr")))
+		handelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertPostBodyErr")))
 	}
 
 	body, ok := (postBody.Body).(*ServiceModel.ClearHistoryParameter)
 	if !ok {
-		HandelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertBodyErr")))
+		handelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertBodyErr")))
 	}
 
 	responseBody := Domain.Clear(body)
-	HandelError(c, *responseBody)
+	handelError(c, *responseBody)
 }

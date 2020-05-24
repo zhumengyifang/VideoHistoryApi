@@ -12,10 +12,11 @@ type ApiConfig struct {
 	APIPort        int         `json:"apiPort"`
 	Redis          RedisConfig `json:"redis"`
 	Mongo          MongoConfig `json:"mongo"`
+	Mysql          MysqlConfig `json:"mysql"`
 }
 
 type RedisConfig struct {
-	IPAddress    string `json:"ipAddress"`
+	Host         string `json:"host"`
 	Password     string `json:"password"`
 	ProtocolType string `json:"protocolType"`
 	MaxIdle      int    `json:"maxIdle"`
@@ -23,8 +24,15 @@ type RedisConfig struct {
 }
 
 type MongoConfig struct {
-	MongoAddr string `json:"mongoAddr"`
-	MaxIdle   uint64 `json:"maxIdle"`
+	Host    string `json:"host"`
+	MaxIdle uint64 `json:"maxIdle"`
+}
+
+type MysqlConfig struct {
+	User     string `json:"user"`
+	Password string `json:"password"`
+	Host     string `json:"host"`
+	Port     int    `json:"port"`
 }
 
 var apiConfig ApiConfig
@@ -57,4 +65,8 @@ func GetRedis() RedisConfig {
 
 func GetMongo() MongoConfig {
 	return apiConfig.Mongo
+}
+
+func GetMysql() MysqlConfig {
+	return apiConfig.Mysql
 }

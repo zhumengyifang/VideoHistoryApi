@@ -26,7 +26,7 @@ func newPool() *redis.Pool {
 		Dial: func() (redis.Conn, error) {
 			return redis.Dial(
 				Config.GetRedis().ProtocolType,
-				Config.GetRedis().IPAddress,
+				Config.GetRedis().Host,
 				redis.DialPassword(Config.GetRedis().Password))
 		},
 	}

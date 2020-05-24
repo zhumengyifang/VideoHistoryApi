@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"gindemo/api/ApiUtil"
+	"gindemo/internal/ConvertModel"
 	"gindemo/internal/InternalUtil"
-	"gindemo/internal/Model/ConvertModel"
 	"gindemo/internal/Model/RedisModel"
 	"gindemo/internal/Model/ServiceModel"
 	"gindemo/internal/RedisUtil"
@@ -13,14 +13,14 @@ import (
 )
 
 func Info(body *ServiceModel.InfoHistoryParameter) *ServiceModel.ResponseBody {
-	//result, err := RedisUtil.GetInfo(body)
-	//if err != nil {
-	//	return ApiUtil.BuildErrorApiResponse(500, errors.New("GetInfoErr"))
-	//}
-	//
-	//if result != nil && result.IsDelete {
-	//	return ApiUtil.BuildErrorApiResponse(200, errors.New("TheVideoHasBeenDeleted"))
-	//}
+	result, err := RedisUtil.GetInfo(body)
+	if err != nil {
+		return ApiUtil.BuildErrorApiResponse(500, errors.New("GetInfoErr"))
+	}
+
+	if result != nil && result.IsDelete {
+		return ApiUtil.BuildErrorApiResponse(500, errors.New("TheVideoHasBeenDeleted"))
+	}
 
 	return ApiUtil.BuildApiResponse(ConvertModel.ConvertGetInfoServiceModel(&RedisModel.HistoryInfoParameter{OpenId: body.OpenId}))
 }
@@ -42,12 +42,13 @@ func List(body *ServiceModel.ListHistoryParameter) *ServiceModel.ResponseBody {
 	}
 
 	videoCount := body.PageCount * body.PageSize
-	if len(infos) >= videoCount {
+	if len(infos) <= videoCount {
 		InternalUtil.SortBySubmitDate(infos)
+	} else {
+
 	}
 
 	result.Videos = ConvertModel.ConvertGetInfosServiceModel(infos)
-
 	return ApiUtil.BuildApiResponse(result)
 }
 

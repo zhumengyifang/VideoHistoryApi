@@ -33,5 +33,5 @@ func (v HistoryInfoParameters) Swap(i, j int) {
 }
 
 func (v HistoryInfoParameters) Less(i, j int) bool {
-	return v[i].SubmitDate.Unix() < v[j].SubmitDate.Unix()
+	return v[i].SubmitDate.Unix() > v[j].SubmitDate.Unix()
 }

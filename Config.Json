@@ -2,14 +2,20 @@
   "apiBearerToken": "Bearer welcome",
   "apiPort": 8080,
   "redis": {
-    "ipAddress": "192.168.170.137:6379",
+    "host": "192.168.170.137:6379",
     "password": "myredis123",
     "protocolType": "tcp",
     "maxIdle": 10,
     "idleTimeout": 240
   },
   "mongo": {
-    "mongoAddr": "mongodb://192.168.170.137:27017",
-    "maxIdle": 20
+    "host": "mongodb://192.168.170.137:27017",
+    "maxIdle": 1
+  },
+  "mysql": {
+    "user": "root",
+    "password": "Admin123!",
+    "host": "192.168.170.137",
+    "port": 3306
   }
 }

@@ -5,6 +5,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Router(engine *gin.Engine) {
+func router(engine *gin.Engine) {
 	Controllers.History(engine)
 }

@@ -9,8 +9,8 @@ import (
 func validate() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if Config.GetAPIBearerToken() != c.Request.Header.Get("Authorization") {
-			c.Abort()
 			c.JSON(http.StatusUnauthorized, nil)
+			c.Abort()
 		}
 	}
 }

@@ -6,11 +6,11 @@ import (
 	"net/http"
 )
 
-func HandelError(c *gin.Context, responseBody ServiceModel.ResponseBody) {
+func handelError(c *gin.Context, responseBody ServiceModel.ResponseBody) {
 	if !responseBody.Header.IsSuccess {
 		c.JSON(http.StatusOK, responseBody)
 		c.Abort()
+	} else {
+		c.JSON(http.StatusOK, responseBody)
 	}
-
-	c.JSON(http.StatusOK, responseBody)
 }
