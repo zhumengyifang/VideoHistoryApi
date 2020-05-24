@@ -9,7 +9,7 @@ import (
 func HandelError(c *gin.Context, responseBody ServiceModel.ResponseBody) {
 	if !responseBody.Header.IsSuccess {
 		c.JSON(http.StatusOK, responseBody)
-		return
+		c.Abort()
 	}
 
 	c.JSON(http.StatusOK, responseBody)

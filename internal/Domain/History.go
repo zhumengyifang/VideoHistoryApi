@@ -13,16 +13,16 @@ import (
 )
 
 func Info(body *ServiceModel.InfoHistoryParameter) *ServiceModel.ResponseBody {
-	result, err := RedisUtil.GetInfo(body)
-	if err != nil {
-		return ApiUtil.BuildErrorApiResponse(500, errors.New("GetInfoErr"))
-	}
+	//result, err := RedisUtil.GetInfo(body)
+	//if err != nil {
+	//	return ApiUtil.BuildErrorApiResponse(500, errors.New("GetInfoErr"))
+	//}
+	//
+	//if result != nil && result.IsDelete {
+	//	return ApiUtil.BuildErrorApiResponse(200, errors.New("TheVideoHasBeenDeleted"))
+	//}
 
-	if result != nil && result.IsDelete {
-		return ApiUtil.BuildErrorApiResponse(200, errors.New("TheVideoHasBeenDeleted"))
-	}
-
-	return ApiUtil.BuildApiResponse(ConvertModel.ConvertGetInfoServiceModel(result))
+	return ApiUtil.BuildApiResponse(ConvertModel.ConvertGetInfoServiceModel(&RedisModel.HistoryInfoParameter{OpenId: body.OpenId}))
 }
 
 func Submit(body *ServiceModel.SubmitHistoryParameter) *ServiceModel.ResponseBody {

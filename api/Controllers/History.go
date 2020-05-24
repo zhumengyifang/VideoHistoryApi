@@ -27,13 +27,11 @@ func info(c *gin.Context) {
 	err := c.Bind(&postBody)
 	if err != nil {
 		HandelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertPostBodyErr")))
-		return
 	}
 
 	body, ok := (postBody.Body).(*ServiceModel.InfoHistoryParameter)
 	if !ok {
 		HandelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertBodyErr")))
-		return
 	}
 
 	responseBody := Domain.Info(body)
@@ -48,13 +46,11 @@ func submit(c *gin.Context) {
 	err := c.Bind(&postBody)
 	if err != nil {
 		HandelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertPostBodyErr")))
-		return
 	}
 
 	body, ok := (postBody.Body).(*ServiceModel.SubmitHistoryParameter)
 	if !ok {
 		HandelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertBodyErr")))
-		return
 	}
 
 	responseBody := Domain.Submit(body)
@@ -69,37 +65,14 @@ func list(c *gin.Context) {
 	err := c.Bind(&postBody)
 	if err != nil {
 		HandelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertPostBodyErr")))
-		return
 	}
 
 	body, ok := (postBody.Body).(*ServiceModel.ListHistoryParameter)
 	if !ok {
 		HandelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertBodyErr")))
-		return
 	}
 
 	responseBody := Domain.List(body)
-	HandelError(c, *responseBody)
-}
-
-/**
-清空
-*/
-func clear(c *gin.Context) {
-	postBody := &ServiceModel.PostBody{Body: &ServiceModel.ClearHistoryParameter{}}
-	err := c.Bind(&postBody)
-	if err != nil {
-		HandelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertPostBodyErr")))
-		return
-	}
-
-	body, ok := (postBody.Body).(*ServiceModel.ClearHistoryParameter)
-	if !ok {
-		HandelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertBodyErr")))
-		return
-	}
-
-	responseBody := Domain.Clear(body)
 	HandelError(c, *responseBody)
 }
 
@@ -111,15 +84,32 @@ func del(c *gin.Context) {
 	err := c.Bind(&postBody)
 	if err != nil {
 		HandelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertPostBodyErr")))
-		return
 	}
 
 	body, ok := (postBody.Body).(*ServiceModel.DelHistoryParameter)
 	if !ok {
 		HandelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertBodyErr")))
-		return
 	}
 
 	responseBody := Domain.Del(body)
+	HandelError(c, *responseBody)
+}
+
+/**
+清空
+*/
+func clear(c *gin.Context) {
+	postBody := &ServiceModel.PostBody{Body: &ServiceModel.ClearHistoryParameter{}}
+	err := c.Bind(&postBody)
+	if err != nil {
+		HandelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertPostBodyErr")))
+	}
+
+	body, ok := (postBody.Body).(*ServiceModel.ClearHistoryParameter)
+	if !ok {
+		HandelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertBodyErr")))
+	}
+
+	responseBody := Domain.Clear(body)
 	HandelError(c, *responseBody)
 }

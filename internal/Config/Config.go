@@ -24,12 +24,13 @@ type RedisConfig struct {
 
 type MongoConfig struct {
 	MongoAddr string `json:"mongoAddr"`
+	MaxIdle   uint64 `json:"maxIdle"`
 }
 
 var apiConfig ApiConfig
 
 func init() {
-	file, err := os.Open("Conf.json")
+	file, err := os.Open("./Config.json")
 	if err != nil {
 		panic(err)
 	}

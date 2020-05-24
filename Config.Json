@@ -9,6 +9,7 @@
     "idleTimeout": 240
   },
   "mongo": {
-    "mongoAddr": "192.168.170.137"
+    "mongoAddr": "mongodb://192.168.170.137:27017",
+    "maxIdle": 20
   }
 }
