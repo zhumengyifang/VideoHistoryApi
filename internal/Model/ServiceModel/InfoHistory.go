@@ -1,6 +1,13 @@
 package ServiceModel
 
-type SubmitHistoryParameter struct {
+type InfoHistoryParameter struct {
+	//用户唯一标识
+	OpenId string `json:"openId" binding:"required"`
+	//视频唯一标识
+	VideoId string `json:"videoId" binding:"required"`
+}
+
+type InfoHistoryResponse struct {
 	////用户唯一标识
 	OpenId string `json:"openId"`
 	//视频唯一标识

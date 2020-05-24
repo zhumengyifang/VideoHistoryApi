@@ -13,5 +13,5 @@ type ResponseError struct {
 
 type ResponseBody struct {
 	Header *ResponseHeader `json:"header"`
-	Body   interface{}    `json:"body"`
+	Body   interface{}     `json:"body"`
 }

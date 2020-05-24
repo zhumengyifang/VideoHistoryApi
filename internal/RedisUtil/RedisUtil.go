@@ -3,8 +3,8 @@ package RedisUtil
 import (
 	"encoding/json"
 	"fmt"
-	"gindemo/api/ServiceModel"
-	"gindemo/internal/RedisUtil/RedisModel"
+	"gindemo/internal/Model/RedisModel"
+	"gindemo/internal/Model/ServiceModel"
 	"github.com/garyburd/redigo/redis"
 	"time"
 )
@@ -68,6 +68,17 @@ func SubmitInfo(parameter *RedisModel.HistoryInfoParameter) error {
 	return nil
 }
 
+func SaveInfos(key string, isSave map[string][]byte) error {
+	conn := pool.Get()
+	defer conn.Close()
+
+	_, err := conn.Do("HSet", redis.Args{}.Add(key).AddFlat(isSave)...)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func GetInfo(parameter *ServiceModel.InfoHistoryParameter) (*RedisModel.HistoryInfoParameter, error) {
 	conn := pool.Get()
 	defer conn.Close()
@@ -100,7 +111,34 @@ func GetALl(key string) (map[string]*RedisModel.HistoryInfoParameter, error) {
 		if err = json.Unmarshal(v.([]uint8), result); err != nil {
 			fmt.Println(err)
 		}
-		infos[result.VideoId] = result
+
+		if !result.IsDelete {
+			infos[result.VideoId] = result
+		}
+	}
+
+	return infos, nil
+}
+
+func GetALl1(key string) ([]*RedisModel.HistoryInfoParameter, error) {
+	conn := pool.Get()
+	defer conn.Close()
+
+	values, err := redis.Values(conn.Do("HVALS", key))
+	if err != nil {
+		return nil, err
+	}
+
+	var infos []*RedisModel.HistoryInfoParameter
+	for _, v := range values {
+		result := new(RedisModel.HistoryInfoParameter)
+		if err = json.Unmarshal(v.([]uint8), result); err != nil {
+			fmt.Println(err)
+		}
+
+		if !result.IsDelete {
+			infos = append(infos, result)
+		}
 	}
 
 	return infos, nil

@@ -2,9 +2,9 @@ package ServiceModel
 
 type DelHistoryParameter struct {
 	//用户唯一标识
-	OpenId string `json:"openId"`
+	OpenId string `json:"openId" binding:"required"`
 	//视频唯一标识
-	VideoIds *[]string `json:"videoIds"`
+	VideoIds *[]string `json:"videoIds" binding:"required"`
 }
 
 type DelHistoryResponse struct {

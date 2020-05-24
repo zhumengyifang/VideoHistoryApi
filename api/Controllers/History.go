@@ -3,8 +3,8 @@ package Controllers
 import (
 	"errors"
 	"gindemo/api/ApiUtil"
-	"gindemo/api/ServiceModel"
 	"gindemo/internal/Domain"
+	"gindemo/internal/Model/ServiceModel"
 	"github.com/gin-gonic/gin"
 )
 

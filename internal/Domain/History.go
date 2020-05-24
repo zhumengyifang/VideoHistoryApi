@@ -4,9 +4,12 @@ import (
 	"encoding/json"
 	"errors"
 	"gindemo/api/ApiUtil"
-	"gindemo/api/ServiceModel"
-	"gindemo/internal/ConvertModel"
+	"gindemo/internal/InternalUtil"
+	"gindemo/internal/Model/ConvertModel"
+	"gindemo/internal/Model/RedisModel"
+	"gindemo/internal/Model/ServiceModel"
 	"gindemo/internal/RedisUtil"
+	"time"
 )
 
 func Info(body *ServiceModel.InfoHistoryParameter) *ServiceModel.ResponseBody {
@@ -31,7 +34,21 @@ func Submit(body *ServiceModel.SubmitHistoryParameter) *ServiceModel.ResponseBod
 }
 
 func List(body *ServiceModel.ListHistoryParameter) *ServiceModel.ResponseBody {
-	return ApiUtil.BuildApiResponse(nil)
+	result := ServiceModel.ListHistoryResponse{PageSize: body.PageSize, PageCount: body.PageCount}
+
+	infos, err := RedisUtil.GetALl1(body.OpenId)
+	if err != nil {
+		return ApiUtil.BuildErrorApiResponse(500, err)
+	}
+
+	videoCount := body.PageCount * body.PageSize
+	if len(infos) >= videoCount {
+		InternalUtil.SortBySubmitDate(infos)
+	}
+
+	result.Videos = ConvertModel.ConvertGetInfosServiceModel(infos)
+
+	return ApiUtil.BuildApiResponse(result)
 }
 
 func Clear(body *ServiceModel.ClearHistoryParameter) *ServiceModel.ResponseBody {
@@ -43,9 +60,6 @@ func Clear(body *ServiceModel.ClearHistoryParameter) *ServiceModel.ResponseBody 
 	result := ServiceModel.ClearHistoryResponse{Count: 0}
 	isDel := make(map[string][]byte)
 	for k, v := range infos {
-		if v.IsDelete {
-			continue
-		}
 		v.IsDelete = true
 		bytes, err := json.Marshal(v)
 		if err != nil {
@@ -70,30 +84,37 @@ func Del(body *ServiceModel.DelHistoryParameter) *ServiceModel.ResponseBody {
 	}
 
 	result := ServiceModel.DelHistoryResponse{OpenId: body.OpenId, DeleteInfo: make(map[string]bool)}
+
 	isDel := make(map[string][]byte)
+	isSave := make(map[string][]byte)
 	for _, v := range *body.VideoIds {
-		result.DeleteInfo[v] = false
+		result.DeleteInfo[v] = true
+
 		if _, ok := infos[v]; !ok {
+			save := RedisModel.HistoryInfoParameter{OpenId: body.OpenId, VideoId: v, IsDelete: true, SubmitDate: time.Now()}
+			bytes, err := json.Marshal(save)
+			if err != nil {
+				continue
+			}
+			isSave[v] = bytes
 			continue
 		}
 
-		value := infos[v]
-		if value.IsDelete {
-			result.DeleteInfo[v] = true
-			continue
-		}
+		del := infos[v]
+		del.IsDelete = true
 
-		value.IsDelete = true
-		bytes, err := json.Marshal(value)
+		bytes, err := json.Marshal(del)
 		if err != nil {
 			continue
 		}
 		isDel[v] = bytes
-		result.DeleteInfo[v] = true
 	}
 
-	err = RedisUtil.Del(body.OpenId, isDel)
-	if err != nil {
+	if err = RedisUtil.Del(body.OpenId, isDel); err != nil {
+		return ApiUtil.BuildErrorApiResponse(500, err)
+	}
+
+	if err = RedisUtil.SaveInfos(body.OpenId, isSave); err != nil {
 		return ApiUtil.BuildErrorApiResponse(500, err)
 	}
 

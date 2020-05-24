@@ -88,8 +88,8 @@ func logger() gin.HandlerFunc {
 
 		requestBody := c.Request.Body
 		body, _ := ioutil.ReadAll(c.Request.Body)
-		
-		fmt.Println(latencyTime, reqMethod, reqUri, statusCode, clientIP, requestBody,body)
+
+		fmt.Println(latencyTime, reqMethod, reqUri, statusCode, clientIP, requestBody, body)
 	}
 }
 

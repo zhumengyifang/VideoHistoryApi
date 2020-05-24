@@ -1,6 +1,6 @@
 package ApiUtil
 
-import "gindemo/api/ServiceModel"
+import "gindemo/internal/Model/ServiceModel"
 
 func BuildErrorApiResponse(code int, err error) *ServiceModel.ResponseBody {
 	return &ServiceModel.ResponseBody{

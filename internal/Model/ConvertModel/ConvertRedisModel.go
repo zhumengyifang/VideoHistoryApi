@@ -1,8 +1,8 @@
 package ConvertModel
 
 import (
-	"gindemo/api/ServiceModel"
-	"gindemo/internal/RedisUtil/RedisModel"
+	"gindemo/internal/Model/RedisModel"
+	"gindemo/internal/Model/ServiceModel"
 	"time"
 )
 

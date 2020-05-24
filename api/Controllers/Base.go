@@ -2,7 +2,7 @@ package Controllers
 
 import (
 	"encoding/json"
-	"gindemo/api/ServiceModel"
+	"gindemo/internal/Model/ServiceModel"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"net/http"

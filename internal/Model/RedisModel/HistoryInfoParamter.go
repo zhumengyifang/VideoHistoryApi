@@ -21,3 +21,17 @@ type HistoryInfoParameter struct {
 	//是否删除
 	IsDelete bool `json:"isDelete"`
 }
+
+type HistoryInfoParameters []*HistoryInfoParameter
+
+func (v HistoryInfoParameters) Len() int {
+	return len(v)
+}
+
+func (v HistoryInfoParameters) Swap(i, j int) {
+	v[i], v[j] = v[j], v[i]
+}
+
+func (v HistoryInfoParameters) Less(i, j int) bool {
+	return v[i].SubmitDate.Unix() < v[j].SubmitDate.Unix()
+}
