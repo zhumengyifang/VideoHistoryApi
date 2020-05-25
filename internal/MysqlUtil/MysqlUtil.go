@@ -1,30 +1,74 @@
 package MysqlUtil
 
 import (
+	"errors"
 	"fmt"
 	"gindemo/internal/Config"
 	"gindemo/internal/Model/MysqlModel"
+	"gindemo/internal/Model/ServiceModel"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"time"
+	"strings"
 )
 
+var db *gorm.DB
+
 func init() {
-	test()
+	db = CreateConn()
 }
 
-func test() {
+func CreateConn() *gorm.DB {
 	connArgs := fmt.Sprintf("%s:%s@(%s:%d)/%s?charset=utf8&parseTime=true&loc=Local", Config.GetMysql().User, Config.GetMysql().Password, Config.GetMysql().Host, Config.GetMysql().Port, "History")
 	db, err := gorm.Open("mysql", connArgs)
 	if err != nil {
-		panic("连接数据库失败")
+		panic(err.Error())
 	}
 
-	user := MysqlModel.Users{OpenId: "2a0adb40c5624410baeed12426ced271", AuthorName: "jarvis"}
-	p := db.Create(&user)
-	videoHistories := MysqlModel.VideoHistories{UserId: user.Id, VideoId: "2a0adb40c5624410baeed12426ced272", UseTIme: 100, Title: "class", CoverUrl: "www.baidu.com", SubmitDate: time.Now()}
-	p = db.Create(&videoHistories)
-	fmt.Println(p.Error)
+	db.DB().SetMaxIdleConns(Config.GetMysql().MaxIdleConns)
+	db.DB().SetMaxOpenConns(Config.GetMysql().MaxOpenConns)
+	db.LogMode(Config.GetMysql().SqlLog)
 
-	defer db.Close()
+	return db
+}
+
+func Info(body *ServiceModel.InfoHistoryParameter) error {
+	if body == nil {
+		return errors.New("body is nil")
+	}
+
+	var user MysqlModel.Users
+	db.First(&user)
+	err := db.Model(&user).Association("VideoHistories").Find(&user.VideoHistories)
+	if err.Error != nil {
+		return err.Error
+	}
+
+	//var user1 MysqlModel.Users
+	//db.First(&user1)
+	//err = db.Model(&user1).Related(&user1.VideoHistories).Find(&user1.VideoHistories)
+	//if err.Error != nil {
+	//	return err.Error
+	//}
+
+	return nil
+}
+
+func Submit(body *ServiceModel.SubmitHistoryParameter) error {
+	if body == nil {
+		return errors.New("body is nil")
+	}
+
+	user := MysqlModel.BuildUsers(body.OpenId, body.AuthorName)
+	err := db.FirstOrCreate(user, "openId=?", user.OpenId)
+	if err.Error != nil {
+		return err.Error
+	}
+
+	videoHistory := MysqlModel.BuildVideoHistories(user.Id, body.VideoId, body.UseTime, strings.Join(*body.Title, ","), body.CoverUrl)
+	err = db.Create(&videoHistory)
+	if err.Error != nil {
+		return err.Error
+	}
+
+	return nil
 }

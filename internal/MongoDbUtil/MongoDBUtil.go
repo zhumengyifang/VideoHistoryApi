@@ -18,7 +18,9 @@ func init() {
 func newPool() (*mongo.Client, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(Config.GetMongo().Host).SetMaxPoolSize(Config.GetMongo().MaxIdle))
+
+	opts := options.Client().ApplyURI(Config.GetMongo().Host).SetMaxPoolSize(Config.GetMongo().MaxPoolSize).SetMinPoolSize(Config.GetMongo().MinPoolSize)
+	client, err := mongo.Connect(ctx, opts)
 	if err != nil {
 		return nil, err
 	}

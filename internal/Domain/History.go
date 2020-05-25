@@ -8,6 +8,7 @@ import (
 	"gindemo/internal/InternalUtil"
 	"gindemo/internal/Model/RedisModel"
 	"gindemo/internal/Model/ServiceModel"
+	"gindemo/internal/MysqlUtil"
 	"gindemo/internal/RedisUtil"
 	"time"
 )
@@ -22,7 +23,9 @@ func Info(body *ServiceModel.InfoHistoryParameter) *ServiceModel.ResponseBody {
 		return ApiUtil.BuildErrorApiResponse(500, errors.New("TheVideoHasBeenDeleted"))
 	}
 
-	return ApiUtil.BuildApiResponse(ConvertModel.ConvertGetInfoServiceModel(&RedisModel.HistoryInfoParameter{OpenId: body.OpenId}))
+	MysqlUtil.Info(body)
+
+	return ApiUtil.BuildApiResponse(ConvertModel.ConvertGetInfoServiceModel(result))
 }
 
 func Submit(body *ServiceModel.SubmitHistoryParameter) *ServiceModel.ResponseBody {
@@ -30,6 +33,12 @@ func Submit(body *ServiceModel.SubmitHistoryParameter) *ServiceModel.ResponseBod
 	if err != nil {
 		return ApiUtil.BuildErrorApiResponse(500, errors.New("GetInfoErr"))
 	}
+
+	err = MysqlUtil.Submit(body)
+	if err != nil {
+		return ApiUtil.BuildErrorApiResponse(500, err)
+	}
+
 	return ApiUtil.BuildApiResponse(nil)
 }
 

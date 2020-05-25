@@ -5,17 +5,22 @@
     "host": "192.168.170.137:6379",
     "password": "myredis123",
     "protocolType": "tcp",
+    "maxActive": 100,
     "maxIdle": 10,
-    "idleTimeout": 240
+    "idleTimeout": 60
   },
   "mongo": {
     "host": "mongodb://192.168.170.137:27017",
-    "maxIdle": 1
+    "maxPoolSize": 1000,
+    "minPoolSize": 10
   },
   "mysql": {
     "user": "root",
     "password": "Admin123!",
     "host": "192.168.170.137",
-    "port": 3306
+    "port": 3306,
+    "maxIdleConns": 10,
+    "maxOpenConns": 100,
+    "sqlLog": true
   }
 }

@@ -21,6 +21,7 @@ func init() {
 */
 func newPool() *redis.Pool {
 	return &redis.Pool{
+		MaxActive:   Config.GetRedis().MaxActive,
 		MaxIdle:     Config.GetRedis().MaxIdle,
 		IdleTimeout: time.Duration(Config.GetRedis().IdleTimeout) * time.Second,
 		Dial: func() (redis.Conn, error) {
@@ -29,6 +30,7 @@ func newPool() *redis.Pool {
 				Config.GetRedis().Host,
 				redis.DialPassword(Config.GetRedis().Password))
 		},
+		Wait: true,
 	}
 }
 
@@ -85,7 +87,6 @@ func GetInfo(parameter *ServiceModel.InfoHistoryParameter) (*RedisModel.HistoryI
 	if err != nil {
 		return nil, err
 	}
-
 	result := new(RedisModel.HistoryInfoParameter)
 	if err = json.Unmarshal(v, result); err != nil {
 		return nil, err
