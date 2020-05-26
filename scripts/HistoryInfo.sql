@@ -1,4 +1,4 @@
-create table users
+create table historyInfo
 (
     id         int primary key auto_increment,
     openId     char(36) not null unique,

@@ -8,7 +8,7 @@ type VideoHistories struct {
 	Id             int64      `gorm:"column:id"`
 	UserId         int64      `gorm:"column:userId"`
 	VideoId        string     `gorm:"column:videoId"`
-	UseTIme        int64      `gorm:"column:useTime"`
+	UseTime        int64      `gorm:"column:useTime"`
 	Title          string     `gorm:"column:title"`
 	CoverUrl       string     `gorm:"column:coverUrl"`
 	UpdateCount    int        `gorm:"column:updateCount"`
@@ -23,11 +23,11 @@ func (VideoHistories) TableName() string {
 	return "videoHistories"
 }
 
-func BuildVideoHistories(userId int64, videoId string, useTime int, title string, coverUrl string) *VideoHistories {
-	return &VideoHistories{
+func BuildVideoHistories(userId int64, videoId string, useTime int, title string, coverUrl string) VideoHistories {
+	return VideoHistories{
 		UserId:         userId,
 		VideoId:        videoId,
-		UseTIme:        int64(useTime),
+		UseTime:        int64(useTime),
 		CoverUrl:       coverUrl,
 		Title:          title,
 		SubmitDateTime: time.Now(),

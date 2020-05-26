@@ -12,5 +12,5 @@ create table videoHistories
     created_at     datetime,
     updated_at     datetime,
     deleted_at     datetime,
-    foreign key (userId) references users (id)
+    foreign key (userId) references historyInfo (id)
 );

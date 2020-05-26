@@ -52,7 +52,7 @@ func createConn(protocolType string, redisAddress string, password string) (redi
 	return conn, nil
 }
 
-func SubmitInfo(parameter *RedisModel.HistoryInfoParameter) error {
+func SubmitInfo(parameter *RedisModel.HistoryInfo) error {
 	conn := pool.Get()
 	defer conn.Close()
 
@@ -79,7 +79,7 @@ func SaveInfos(key string, isSave map[string][]byte) error {
 	return nil
 }
 
-func GetInfo(parameter *ServiceModel.InfoHistoryParameter) (*RedisModel.HistoryInfoParameter, error) {
+func GetInfo(parameter *ServiceModel.InfoHistoryParameter) (*RedisModel.HistoryInfo, error) {
 	conn := pool.Get()
 	defer conn.Close()
 
@@ -87,7 +87,8 @@ func GetInfo(parameter *ServiceModel.InfoHistoryParameter) (*RedisModel.HistoryI
 	if err != nil {
 		return nil, err
 	}
-	result := new(RedisModel.HistoryInfoParameter)
+
+	result := new(RedisModel.HistoryInfo)
 	if err = json.Unmarshal(v, result); err != nil {
 		return nil, err
 	}
@@ -95,7 +96,7 @@ func GetInfo(parameter *ServiceModel.InfoHistoryParameter) (*RedisModel.HistoryI
 	return result, nil
 }
 
-func GetALl(key string) (map[string]*RedisModel.HistoryInfoParameter, error) {
+func GetALl(key string) (map[string]*RedisModel.HistoryInfo, error) {
 	conn := pool.Get()
 	defer conn.Close()
 
@@ -104,9 +105,9 @@ func GetALl(key string) (map[string]*RedisModel.HistoryInfoParameter, error) {
 		return nil, err
 	}
 
-	infos := make(map[string]*RedisModel.HistoryInfoParameter)
+	infos := make(map[string]*RedisModel.HistoryInfo)
 	for _, v := range values {
-		result := new(RedisModel.HistoryInfoParameter)
+		result := new(RedisModel.HistoryInfo)
 		if err = json.Unmarshal(v.([]uint8), result); err != nil {
 			fmt.Println(err)
 		}
@@ -119,7 +120,7 @@ func GetALl(key string) (map[string]*RedisModel.HistoryInfoParameter, error) {
 	return infos, nil
 }
 
-func GetALl1(key string) ([]*RedisModel.HistoryInfoParameter, error) {
+func GetALl1(key string) ([]*RedisModel.HistoryInfo, error) {
 	conn := pool.Get()
 	defer conn.Close()
 
@@ -128,9 +129,9 @@ func GetALl1(key string) ([]*RedisModel.HistoryInfoParameter, error) {
 		return nil, err
 	}
 
-	var infos []*RedisModel.HistoryInfoParameter
+	var infos []*RedisModel.HistoryInfo
 	for _, v := range values {
-		result := new(RedisModel.HistoryInfoParameter)
+		result := new(RedisModel.HistoryInfo)
 		if err = json.Unmarshal(v.([]uint8), result); err != nil {
 			fmt.Println(err)
 		}

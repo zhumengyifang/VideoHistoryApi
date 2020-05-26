@@ -1,11 +1,49 @@
 package ConvertModel
 
 import (
+	"gindemo/internal/Model/MysqlModel"
 	"gindemo/internal/Model/RedisModel"
 	"gindemo/internal/Model/ServiceModel"
+	. "strings"
 )
 
-func ConvertGetInfoServiceModel(parameter *RedisModel.HistoryInfoParameter) *ServiceModel.InfoHistoryResponse {
+func RedisConvertInfosServiceModel(parameter []*RedisModel.HistoryInfo) []*ServiceModel.InfoHistoryResponse {
+	if parameter == nil {
+		return nil
+	}
+
+	var infos []*ServiceModel.InfoHistoryResponse
+	for _, v := range parameter {
+		infos = append(infos, ConvertInfoServiceModel(v))
+	}
+	return infos
+}
+
+func MysqlConvertInfosServiceModel(parameter []*RedisModel.HistoryInfo) []*ServiceModel.InfoHistoryResponse {
+	if parameter == nil {
+		return nil
+	}
+
+	var infos []*ServiceModel.InfoHistoryResponse
+	for _, v := range parameter {
+		infos = append(infos, ConvertInfoServiceModel(v))
+	}
+	return infos
+}
+
+func ConvertInfoServiceModel(parameter interface{}) *ServiceModel.InfoHistoryResponse {
+	switch parameter.(type) {
+	case *RedisModel.HistoryInfo:
+		value := parameter.(*RedisModel.HistoryInfo)
+		return redisInfoConvertServiceModel(value)
+	case *MysqlModel.HistoryInfo:
+		value := parameter.(*MysqlModel.HistoryInfo)
+		return mysqlInfoConvertServiceModel(value)
+	}
+	return nil
+}
+
+func redisInfoConvertServiceModel(parameter *RedisModel.HistoryInfo) *ServiceModel.InfoHistoryResponse {
 	if parameter == nil {
 		return nil
 	}
@@ -20,14 +58,19 @@ func ConvertGetInfoServiceModel(parameter *RedisModel.HistoryInfoParameter) *Ser
 	}
 }
 
-func ConvertGetInfosServiceModel(parameter []*RedisModel.HistoryInfoParameter) []*ServiceModel.InfoHistoryResponse {
+func mysqlInfoConvertServiceModel(parameter *MysqlModel.HistoryInfo) *ServiceModel.InfoHistoryResponse {
 	if parameter == nil {
 		return nil
 	}
 
-	var infos []*ServiceModel.InfoHistoryResponse
-	for _, v := range parameter {
-		infos = append(infos, ConvertGetInfoServiceModel(v))
+	title := Split(parameter.VideoHistories.Title, ",")
+
+	return &ServiceModel.InfoHistoryResponse{
+		OpenId:     parameter.OpenId,
+		VideoId:    parameter.VideoHistories.VideoId,
+		UseTime:    int(parameter.VideoHistories.UseTime),
+		AuthorName: parameter.AuthorName,
+		Title:      &title,
+		CoverUrl:   parameter.VideoHistories.CoverUrl,
 	}
-	return infos
 }

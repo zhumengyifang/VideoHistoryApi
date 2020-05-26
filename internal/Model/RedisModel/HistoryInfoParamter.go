@@ -2,7 +2,7 @@ package RedisModel
 
 import "time"
 
-type HistoryInfoParameter struct {
+type HistoryInfo struct {
 	////用户唯一标识
 	OpenId string `json:"openId"`
 	//视频唯一标识
@@ -22,16 +22,16 @@ type HistoryInfoParameter struct {
 	IsDelete bool `json:"isDelete"`
 }
 
-type HistoryInfoParameters []*HistoryInfoParameter
+type HistoryInfos []*HistoryInfo
 
-func (v HistoryInfoParameters) Len() int {
+func (v HistoryInfos) Len() int {
 	return len(v)
 }
 
-func (v HistoryInfoParameters) Swap(i, j int) {
+func (v HistoryInfos) Swap(i, j int) {
 	v[i], v[j] = v[j], v[i]
 }
 
-func (v HistoryInfoParameters) Less(i, j int) bool {
+func (v HistoryInfos) Less(i, j int) bool {
 	return v[i].SubmitDate.Unix() > v[j].SubmitDate.Unix()
 }

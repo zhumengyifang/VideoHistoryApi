@@ -31,26 +31,43 @@ func CreateConn() *gorm.DB {
 	return db
 }
 
-func Info(body *ServiceModel.InfoHistoryParameter) error {
+func Info(body *ServiceModel.InfoHistoryParameter) (*MysqlModel.HistoryInfo, error) {
 	if body == nil {
-		return errors.New("body is nil")
+		return nil, errors.New("body is nil")
 	}
 
-	var user MysqlModel.Users
-	db.First(&user)
-	err := db.Model(&user).Association("VideoHistories").Find(&user.VideoHistories)
-	if err.Error != nil {
-		return err.Error
+	historyInfo := MysqlModel.HistoryInfo{}
+	result := db.First(&historyInfo)
+	if result.Error != nil {
+		return nil, result.Error
 	}
 
-	//var user1 MysqlModel.Users
-	//db.First(&user1)
-	//err = db.Model(&user1).Related(&user1.VideoHistories).Find(&user1.VideoHistories)
-	//if err.Error != nil {
-	//	return err.Error
-	//}
+	result = db.Find(&historyInfo.VideoHistories, "userId=? and videoId=?", historyInfo.Id, body.VideoId)
+	if result.Error != nil {
+		return nil, result.Error
+	}
 
-	return nil
+	return &historyInfo, nil
+}
+
+func List(body *ServiceModel.ListHistoryParameter) (*MysqlModel.HistoryInfo, error) {
+	if body == nil {
+		return nil, errors.New("body is nil")
+	}
+
+	historyInfo := MysqlModel.HistoryInfo{}
+	result := db.Find(&historyInfo, "openId=?", body.OpenId)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	sql := "select videoId, useTime, submitDateTime, isDel, title, coverUrl, submitDateTime from videoHistories  where userId = ? and isDel=0 order by submitDateTime desc limit ?,?;"
+	result = db.Raw(sql, historyInfo.Id, (body.PageCount-1)*body.PageSize, body.PageSize).Scan(&historyInfo.VideosHistories)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+
+	return &historyInfo, nil
 }
 
 func Submit(body *ServiceModel.SubmitHistoryParameter) error {
@@ -59,15 +76,32 @@ func Submit(body *ServiceModel.SubmitHistoryParameter) error {
 	}
 
 	user := MysqlModel.BuildUsers(body.OpenId, body.AuthorName)
-	err := db.FirstOrCreate(user, "openId=?", user.OpenId)
-	if err.Error != nil {
-		return err.Error
+	result := db.FirstOrCreate(&user, "openId=?", user.OpenId)
+	if result.Error != nil {
+		return result.Error
 	}
 
-	videoHistory := MysqlModel.BuildVideoHistories(user.Id, body.VideoId, body.UseTime, strings.Join(*body.Title, ","), body.CoverUrl)
-	err = db.Create(&videoHistory)
-	if err.Error != nil {
-		return err.Error
+	user.VideoHistories = MysqlModel.BuildVideoHistories(user.Id, body.VideoId, body.UseTime, strings.Join(*body.Title, ","), body.CoverUrl)
+	result = db.Find(&user.VideoHistories, "userId=? and videoId=?", user.Id, body.VideoId)
+	if result.Error != nil && result.Error != gorm.ErrRecordNotFound {
+		return result.Error
+	}
+
+	if result.Error == gorm.ErrRecordNotFound {
+		result = db.Create(&user.VideoHistories)
+		if result.Error != nil {
+			return result.Error
+		}
+	} else {
+		user.VideoHistories.UseTime = int64(body.UseTime)
+		user.VideoHistories.Title = strings.Join(*body.Title, ",")
+		user.VideoHistories.CoverUrl = body.CoverUrl
+		user.VideoHistories.IsDel = false
+
+		result = db.Model(&user.VideoHistories).Update(user.VideoHistories)
+		if result.Error != nil {
+			return result.Error
+		}
 	}
 
 	return nil
