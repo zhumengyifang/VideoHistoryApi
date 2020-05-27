@@ -49,7 +49,7 @@ func Submit(body *ServiceModel.SubmitHistoryParameter) *ServiceModel.ResponseBod
 func List(body *ServiceModel.ListHistoryParameter) *ServiceModel.ResponseBody {
 	result := ServiceModel.ListHistoryResponse{PageCount: body.PageCount}
 
-	redisInfos, err := RedisUtil.GetALl1(body.OpenId)
+	redisInfos, err := RedisUtil.GetAllSlice(body.OpenId)
 	if err != nil && err != redis.ErrNil {
 		return ApiUtil.BuildErrorApiResponse(500, err)
 	}
@@ -104,20 +104,21 @@ func distinctVideoId(infos []*RedisModel.HistoryInfo) []*RedisModel.HistoryInfo 
 }
 
 func Clear(body *ServiceModel.ClearHistoryParameter) *ServiceModel.ResponseBody {
-	infos, err := RedisUtil.GetALl(body.OpenId)
+	infos, err := RedisUtil.GetAllMap(body.OpenId)
 	if err != nil {
 		return ApiUtil.BuildErrorApiResponse(500, err)
 	}
 
-	result := ServiceModel.ClearHistoryResponse{Count: 0}
 	isDel := make(map[string][]byte)
 	for k, v := range infos {
+		if v.IsDelete {
+			continue
+		}
 		v.IsDelete = true
 		bytes, err := json.Marshal(v)
 		if err != nil {
 			continue
 		}
-		result.Count++
 		isDel[k] = bytes
 	}
 
@@ -126,11 +127,15 @@ func Clear(body *ServiceModel.ClearHistoryParameter) *ServiceModel.ResponseBody 
 		return ApiUtil.BuildErrorApiResponse(500, err)
 	}
 
-	return ApiUtil.BuildApiResponse(result)
+	if err = MysqlUtil.Clear(body.OpenId); err != nil {
+		return ApiUtil.BuildErrorApiResponse(500, err)
+	}
+
+	return ApiUtil.BuildApiResponse(nil)
 }
 
 func Del(body *ServiceModel.DelHistoryParameter) *ServiceModel.ResponseBody {
-	infos, err := RedisUtil.GetALl(body.OpenId)
+	infos, err := RedisUtil.GetAllMap(body.OpenId)
 	if err != nil {
 		return ApiUtil.BuildErrorApiResponse(500, err)
 	}
@@ -139,7 +144,7 @@ func Del(body *ServiceModel.DelHistoryParameter) *ServiceModel.ResponseBody {
 
 	isDel := make(map[string][]byte)
 	isSave := make(map[string][]byte)
-	for _, v := range *body.VideoIds {
+	for _, v := range body.VideoIds {
 		result.DeleteInfo[v] = true
 
 		if _, ok := infos[v]; !ok {
@@ -153,8 +158,10 @@ func Del(body *ServiceModel.DelHistoryParameter) *ServiceModel.ResponseBody {
 		}
 
 		del := infos[v]
+		if del.IsDelete {
+			continue
+		}
 		del.IsDelete = true
-
 		bytes, err := json.Marshal(del)
 		if err != nil {
 			continue
@@ -167,6 +174,11 @@ func Del(body *ServiceModel.DelHistoryParameter) *ServiceModel.ResponseBody {
 	}
 
 	if err = RedisUtil.SaveInfos(body.OpenId, isSave); err != nil {
+		return ApiUtil.BuildErrorApiResponse(500, err)
+	}
+
+	err = MysqlUtil.Del(body)
+	if err != nil {
 		return ApiUtil.BuildErrorApiResponse(500, err)
 	}
 

@@ -6,6 +6,7 @@ import (
 	"gindemo/internal/Config"
 	"gindemo/internal/Model/MysqlModel"
 	"gindemo/internal/Model/ServiceModel"
+	"gindemo/internal/RedisUtil"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"strings"
@@ -42,7 +43,7 @@ func Info(body *ServiceModel.InfoHistoryParameter) (*MysqlModel.HistoryInfo, err
 		return nil, result.Error
 	}
 
-	result = db.Find(&historyInfo.VideoHistories, "userId=? and videoId=?", historyInfo.Id, body.VideoId)
+	result = db.Find(&historyInfo.VideoHistories, "userId=? and videoId=? and isDel=0", historyInfo.Id, body.VideoId)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -102,6 +103,48 @@ func Submit(body *ServiceModel.SubmitHistoryParameter) error {
 		if result.Error != nil {
 			return result.Error
 		}
+	}
+
+	err := RedisUtil.DelCommand(body.OpenId, []string{body.VideoId})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func Del(body *ServiceModel.DelHistoryParameter) error {
+	if body == nil {
+		return errors.New("body is nil")
+	}
+
+	sql := "update videoHistories set isDel=1,updated_at=now() where userId=(select id from historyInfo where openId=?) and videoId in(?);"
+	result := db.Exec(sql, body.OpenId, body.VideoIds)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	err := RedisUtil.DelCommand(body.OpenId, body.VideoIds)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func Clear(openId string) error {
+	if openId == "" {
+		return errors.New("body is nil")
+	}
+
+	sql := "update videoHistories set isDel=1,updated_at=now() where userId=(select id from historyInfo where openId=?);"
+	result := db.Exec(sql, openId)
+	if result.Error != nil {
+		return result.Error
+	}
+
+	if err := RedisUtil.Clear(openId); err != nil {
+		return err
 	}
 
 	return nil

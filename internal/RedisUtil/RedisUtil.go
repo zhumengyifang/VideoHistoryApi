@@ -68,17 +68,6 @@ func SubmitInfo(parameter *RedisModel.HistoryInfo) error {
 	return nil
 }
 
-func SaveInfos(key string, isSave map[string][]byte) error {
-	conn := pool.Get()
-	defer conn.Close()
-
-	_, err := conn.Do("HSet", redis.Args{}.Add(key).AddFlat(isSave)...)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
 func GetInfo(parameter *ServiceModel.InfoHistoryParameter) (*RedisModel.HistoryInfo, error) {
 	conn := pool.Get()
 	defer conn.Close()
@@ -96,7 +85,7 @@ func GetInfo(parameter *ServiceModel.InfoHistoryParameter) (*RedisModel.HistoryI
 	return result, nil
 }
 
-func GetALl(key string) (map[string]*RedisModel.HistoryInfo, error) {
+func GetAllMap(key string) (map[string]*RedisModel.HistoryInfo, error) {
 	conn := pool.Get()
 	defer conn.Close()
 
@@ -112,15 +101,13 @@ func GetALl(key string) (map[string]*RedisModel.HistoryInfo, error) {
 			fmt.Println(err)
 		}
 
-		if !result.IsDelete {
-			infos[result.VideoId] = result
-		}
+		infos[result.VideoId] = result
 	}
 
 	return infos, nil
 }
 
-func GetALl1(key string) ([]*RedisModel.HistoryInfo, error) {
+func GetAllSlice(key string) ([]*RedisModel.HistoryInfo, error) {
 	conn := pool.Get()
 	defer conn.Close()
 
@@ -153,6 +140,53 @@ func Del(key string, isDel map[string][]byte) error {
 	defer conn.Close()
 
 	_, err := conn.Do("HMSet", redis.Args{}.Add(key).AddFlat(isDel)...)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func SaveInfos(key string, isSave map[string][]byte) error {
+	if len(isSave) == 0 {
+		return nil
+	}
+
+	conn := pool.Get()
+	defer conn.Close()
+
+	_, err := conn.Do("HSet", redis.Args{}.Add(key).AddFlat(isSave)...)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func DelCommand(key string, removes []string) error {
+	if removes == nil {
+		return nil
+	}
+
+	conn := pool.Get()
+	defer conn.Close()
+
+	_, err := conn.Do("HDel", redis.Args{}.Add(key).AddFlat(removes)...)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func Clear(removes string) error {
+	if removes == "" {
+		return nil
+	}
+
+	conn := pool.Get()
+	defer conn.Close()
+
+	_, err := conn.Do("Del", removes)
 	if err != nil {
 		return err
 	}

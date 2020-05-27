@@ -5,6 +5,3 @@ type ClearHistoryParameter struct {
 	OpenId string `json:"openId" binding:"required"`
 }
 
-type ClearHistoryResponse struct {
-	Count int `json:"count"`
-}
