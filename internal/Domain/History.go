@@ -38,8 +38,8 @@ func Submit(body *ServiceModel.SubmitHistoryParameter) *ServiceModel.ResponseBod
 		return ApiUtil.BuildErrorApiResponse(500, err)
 	}
 
-	err = MysqlUtil.Submit(body)
-	if err != nil {
+	task := RedisModel.Task{TaskType: "Submit", TaskMessage: body}
+	if err = RedisUtil.TaskLPush(task); err != nil {
 		return ApiUtil.BuildErrorApiResponse(500, err)
 	}
 
@@ -127,7 +127,8 @@ func Clear(body *ServiceModel.ClearHistoryParameter) *ServiceModel.ResponseBody 
 		return ApiUtil.BuildErrorApiResponse(500, err)
 	}
 
-	if err = MysqlUtil.Clear(body.OpenId); err != nil {
+	task := RedisModel.Task{TaskType: "Clear", TaskMessage: body}
+	if err = RedisUtil.TaskLPush(task); err != nil {
 		return ApiUtil.BuildErrorApiResponse(500, err)
 	}
 
@@ -177,8 +178,8 @@ func Del(body *ServiceModel.DelHistoryParameter) *ServiceModel.ResponseBody {
 		return ApiUtil.BuildErrorApiResponse(500, err)
 	}
 
-	err = MysqlUtil.Del(body)
-	if err != nil {
+	task := RedisModel.Task{TaskType: "Del", TaskMessage: body}
+	if err = RedisUtil.TaskLPush(task); err != nil {
 		return ApiUtil.BuildErrorApiResponse(500, err)
 	}
 

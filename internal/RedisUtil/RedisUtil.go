@@ -193,3 +193,47 @@ func Clear(removes string) error {
 
 	return nil
 }
+
+func TaskLPush(task RedisModel.Task) error {
+	conn := pool.Get()
+	defer conn.Close()
+
+	bytes, err := json.Marshal(task)
+	if err != nil {
+		return err
+	}
+
+	if _, err = conn.Do("LPush", task.TaskType+"Task", bytes); err != nil {
+		return err
+	}
+	return nil
+}
+
+func TaskRPop(taskType string) (*RedisModel.Task, error) {
+	conn := pool.Get()
+	defer conn.Close()
+
+	bytes, err := redis.Bytes(conn.Do("RPop", taskType+"Task"))
+	if err != nil {
+		return nil, err
+	}
+
+	result := RedisModel.Task{}
+	switch taskType {
+	case "Submit":
+		result.TaskMessage = new(ServiceModel.SubmitHistoryParameter)
+		break
+	case "Del":
+		result.TaskMessage = new(ServiceModel.DelHistoryParameter)
+		break
+	case "Clear":
+		result.TaskMessage = new(ServiceModel.ClearHistoryParameter)
+		break
+	}
+
+	if err = json.Unmarshal(bytes, &result); err != nil {
+		return nil, err
+	}
+
+	return &result, nil
+}

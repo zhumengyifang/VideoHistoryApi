@@ -132,18 +132,18 @@ func Del(body *ServiceModel.DelHistoryParameter) error {
 	return nil
 }
 
-func Clear(openId string) error {
-	if openId == "" {
+func Clear(body *ServiceModel.ClearHistoryParameter) error {
+	if body == nil {
 		return errors.New("body is nil")
 	}
 
 	sql := "update videoHistories set isDel=1,updated_at=now() where userId=(select id from historyInfo where openId=?);"
-	result := db.Exec(sql, openId)
+	result := db.Exec(sql, body.OpenId)
 	if result.Error != nil {
 		return result.Error
 	}
 
-	if err := RedisUtil.Clear(openId); err != nil {
+	if err := RedisUtil.Clear(body.OpenId); err != nil {
 		return err
 	}
 
