@@ -2,7 +2,7 @@ package ServiceModel
 
 type ListHistoryParameter struct {
 	//用户唯一标识
-	OpenId string `json:"openId"`
+	OpenId string `form:"openId" json:"openId" binding:"required"`
 
 	PageCount int `json:"pageCount"`
 	PageSize  int `json:"pageSize"`
