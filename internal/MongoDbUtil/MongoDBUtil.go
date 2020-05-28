@@ -27,8 +27,17 @@ func newPool() (*mongo.Client, error) {
 	return client, nil
 }
 
-func InsertOne(log *MongodbModel.MongoLog) (interface{}, error) {
+func InsertApiLog(log *MongodbModel.MongoApiLog) (interface{}, error) {
 	collection := pool.Database("History").Collection("ApiLog")
+	insertResult, err := collection.InsertOne(context.TODO(), log)
+	if err != nil {
+		return nil, err
+	}
+	return insertResult.InsertedID, nil
+}
+
+func InsertTaskLog(log *MongodbModel.MongoTaskLog) (interface{}, error) {
+	collection := pool.Database("History").Collection(log.TaskType)
 	insertResult, err := collection.InsertOne(context.TODO(), log)
 	if err != nil {
 		return nil, err

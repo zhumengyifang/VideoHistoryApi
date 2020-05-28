@@ -8,11 +8,14 @@ import (
 )
 
 type ApiConfig struct {
-	APIBearerToken string      `json:"apiBearerToken"`
-	APIPort        int         `json:"apiPort"`
-	Redis          RedisConfig `json:"redis"`
-	Mongo          MongoConfig `json:"mongo"`
-	Mysql          MysqlConfig `json:"mysql"`
+	APIBearerToken  string      `json:"apiBearerToken"`
+	APIPort         int         `json:"apiPort"`
+	SubmitTaskCount int         `json:"submitTaskCount"`
+	DelTaskCount    int         `json:"delTaskCount"`
+	ClearTaskCount  int         `json:"clearTaskCount"`
+	Redis           RedisConfig `json:"redis"`
+	Mongo           MongoConfig `json:"mongo"`
+	Mysql           MysqlConfig `json:"mysql"`
 }
 
 type RedisConfig struct {
@@ -62,6 +65,18 @@ func GetAPIBearerToken() string {
 
 func GetAPIPort() string {
 	return ":" + strconv.Itoa(apiConfig.APIPort)
+}
+
+func SubmitTaskCount() int {
+	return apiConfig.SubmitTaskCount
+}
+
+func DelTaskCount() int {
+	return apiConfig.DelTaskCount
+}
+
+func ClearTaskCount() int {
+	return apiConfig.ClearTaskCount
 }
 
 func GetRedis() RedisConfig {

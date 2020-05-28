@@ -1,53 +1,94 @@
 package Task
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
+	"gindemo/internal/Config"
+	"gindemo/internal/Model/MongodbModel"
 	"gindemo/internal/Model/RedisModel"
 	"gindemo/internal/Model/ServiceModel"
+	"gindemo/internal/MongoDbUtil"
 	"gindemo/internal/MysqlUtil"
 	"gindemo/internal/RedisUtil"
+	"github.com/garyburd/redigo/redis"
+	"time"
 )
 
 func init() {
-	go StartTask("Submit")
-	go StartTask("Del")
-	go StartTask("Clear")
+	for i := 0; i < Config.SubmitTaskCount(); i++ {
+		go StartTask("Submit")
+	}
+
+	for i := 0; i < Config.DelTaskCount(); i++ {
+		go StartTask("Del")
+	}
+
+	for i := 0; i < Config.ClearTaskCount(); i++ {
+		go StartTask("Clear")
+	}
 }
 
 func StartTask(taskType string) {
 	for {
-		HandelMessage(taskType)
+		HandelTask(taskType)
 	}
 }
 
-func HandelMessage(taskType string) {
-	message, err := RedisUtil.TaskRPop(taskType)
+func HandelTask(taskType string) {
+	taskLog := MongodbModel.MongoTaskLog{TaskType: taskType}
+
+	defer func() {
+		if err := recover(); err != nil && err != redis.ErrNil {
+			taskLog.TaskError = (err.(error)).Error()
+			_, _ = MongoDbUtil.InsertTaskLog(&taskLog)
+		}
+	}()
+
+	message, err := RedisUtil.TaskBRPOP(taskType)
 	if err != nil {
-		return
+		panic(err)
 	}
 
+	taskLog.StartTime = time.Now()
+	bytes, err := json.Marshal(message)
+	if err != nil {
+		panic(err)
+	}
+	taskLog.TaskMessage = string(bytes)
+
+	err = HandelMessage(message)
+	if err != nil {
+		panic(err)
+	}
+	taskLog.EndTime = time.Now()
+	taskLog.LatencyTime = taskLog.EndTime.Sub(taskLog.StartTime).Milliseconds()
+	_, _ = MongoDbUtil.InsertTaskLog(&taskLog)
+}
+
+func HandelMessage(message *RedisModel.Task) error {
 	switch message.TaskType {
 	case "Submit":
 		if err := submit(message); err != nil {
-
+			panic(err)
 		}
 		break
 	case "Del":
 		if err := del(message); err != nil {
-
+			panic(err)
 		}
 		break
 	case "Clear":
 		if err := clear(message); err != nil {
-
+			panic(err)
 		}
 		break
 	}
+	return nil
 }
 
 func submit(message *RedisModel.Task) error {
-	body, ok := (message.TaskMessage).(*ServiceModel.SubmitHistoryParameter)
+	body, ok := (message.TaskMessage).(*RedisModel.HistoryInfo)
 	if !ok {
 		return errors.New("ConversionFailure")
 	}

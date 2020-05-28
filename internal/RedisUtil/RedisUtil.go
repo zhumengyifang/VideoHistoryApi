@@ -53,6 +53,10 @@ func createConn(protocolType string, redisAddress string, password string) (redi
 }
 
 func SubmitInfo(parameter *RedisModel.HistoryInfo) error {
+	if parameter == nil {
+		return nil
+	}
+
 	conn := pool.Get()
 	defer conn.Close()
 
@@ -162,22 +166,6 @@ func SaveInfos(key string, isSave map[string][]byte) error {
 	return nil
 }
 
-func DelCommand(key string, removes []string) error {
-	if removes == nil {
-		return nil
-	}
-
-	conn := pool.Get()
-	defer conn.Close()
-
-	_, err := conn.Do("HDel", redis.Args{}.Add(key).AddFlat(removes)...)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
 func Clear(removes string) error {
 	if removes == "" {
 		return nil
@@ -207,33 +195,4 @@ func TaskLPush(task RedisModel.Task) error {
 		return err
 	}
 	return nil
-}
-
-func TaskRPop(taskType string) (*RedisModel.Task, error) {
-	conn := pool.Get()
-	defer conn.Close()
-
-	bytes, err := redis.Bytes(conn.Do("RPop", taskType+"Task"))
-	if err != nil {
-		return nil, err
-	}
-
-	result := RedisModel.Task{}
-	switch taskType {
-	case "Submit":
-		result.TaskMessage = new(ServiceModel.SubmitHistoryParameter)
-		break
-	case "Del":
-		result.TaskMessage = new(ServiceModel.DelHistoryParameter)
-		break
-	case "Clear":
-		result.TaskMessage = new(ServiceModel.ClearHistoryParameter)
-		break
-	}
-
-	if err = json.Unmarshal(bytes, &result); err != nil {
-		return nil, err
-	}
-
-	return &result, nil
 }

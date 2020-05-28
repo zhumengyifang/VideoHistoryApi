@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-type MongoLog struct {
+type MongoApiLog struct {
 	StartTime time.Time `json:"start_time"`
 	EndTime   time.Time `json:"end_time"`
 	//单位(毫秒)ms
@@ -17,8 +17,8 @@ type MongoLog struct {
 	ResponseBody string `json:"response_body"`
 }
 
-func BuildMongoLog(startTime time.Time, endTime time.Time, latencyTime int64, reqMethod string, reqUrl string, statusCode int, clientIP string, requestBody string, responseBody string) *MongoLog {
-	return &MongoLog{
+func BuildMongoApiLog(startTime time.Time, endTime time.Time, latencyTime int64, reqMethod string, reqUrl string, statusCode int, clientIP string, requestBody string, responseBody string) *MongoApiLog {
+	return &MongoApiLog{
 		StartTime:    startTime,
 		EndTime:      endTime,
 		LatencyTime:  latencyTime,

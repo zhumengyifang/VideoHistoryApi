@@ -46,8 +46,8 @@ func logger() gin.HandlerFunc {
 		//响应body
 		responseBody := blw.body.String()
 
-		mongoLog := MongodbModel.BuildMongoLog(startTime, endTime, latencyTime.Milliseconds(), reqMethod, reqUri, statusCode, clientIP, string(requestBody), responseBody)
-		_, _ = MongoDbUtil.InsertOne(mongoLog)
+		mongoLog := MongodbModel.BuildMongoApiLog(startTime, endTime, latencyTime.Milliseconds(), reqMethod, reqUri, statusCode, clientIP, string(requestBody), responseBody)
+		_, _ = MongoDbUtil.InsertApiLog(mongoLog)
 	}
 }
 

@@ -1,6 +1,9 @@
 {
   "apiBearerToken": "Bearer welcome",
   "apiPort": 8080,
+  "submitTaskCount": 1,
+  "delTaskCount": 1,
+  "clearTaskCount": 1,
   "redis": {
     "host": "192.168.170.137:6379",
     "password": "myredis123",

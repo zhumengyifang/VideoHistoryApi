@@ -25,7 +25,7 @@ func Info(body *ServiceModel.InfoHistoryParameter) *ServiceModel.ResponseBody {
 	}
 
 	result1, err := MysqlUtil.Info(body)
-	if err != nil {
+	if err != nil && err != gorm.ErrRecordNotFound {
 		return ApiUtil.BuildErrorApiResponse(500, err)
 	}
 
@@ -33,12 +33,13 @@ func Info(body *ServiceModel.InfoHistoryParameter) *ServiceModel.ResponseBody {
 }
 
 func Submit(body *ServiceModel.SubmitHistoryParameter) *ServiceModel.ResponseBody {
-	err := RedisUtil.SubmitInfo(ConvertModel.ConvertSubmitHistoryRedisModel(body))
+	redisInfo := ConvertModel.ConvertSubmitHistoryRedisModel(body)
+	err := RedisUtil.SubmitInfo(redisInfo)
 	if err != nil {
 		return ApiUtil.BuildErrorApiResponse(500, err)
 	}
 
-	task := RedisModel.Task{TaskType: "Submit", TaskMessage: body}
+	task := RedisModel.Task{TaskType: "Submit", TaskMessage: redisInfo}
 	if err = RedisUtil.TaskLPush(task); err != nil {
 		return ApiUtil.BuildErrorApiResponse(500, err)
 	}
