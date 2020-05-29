@@ -17,7 +17,7 @@ api初始化
 func init() {
 	engine := gin.Default()
 
-	//engine.Use(validate())
+	engine.Use(validate())
 	engine.Use(logger())
 
 	router(engine)
