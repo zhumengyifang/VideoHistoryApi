@@ -1,9 +1,9 @@
 package ServiceModel
 
 type Header struct {
-	Version   int    `form:"version" json:"version" binding:"required"`
-	AppID     string `json:"appId"`
-	AppSecret string `json:"appSecret"`
+	Version   int    `json:"version" binding:"min=1"`
+	AppID     string `json:"appId" binding:"required"`
+	AppSecret string `json:"appSecret" binding:"required"`
 }
 
 type PostBody struct {

@@ -31,11 +31,11 @@ func init() {
 
 func StartTask(taskType string) {
 	for {
-		HandelTask(taskType)
+		HandleTask(taskType)
 	}
 }
 
-func HandelTask(taskType string) {
+func HandleTask(taskType string) {
 	taskLog := MongodbModel.MongoTaskLog{TaskType: taskType}
 
 	defer func() {
@@ -57,7 +57,7 @@ func HandelTask(taskType string) {
 	}
 	taskLog.TaskMessage = string(bytes)
 
-	err = HandelMessage(message)
+	err = HandleMessage(message)
 	if err != nil {
 		panic(err)
 	}
@@ -66,7 +66,7 @@ func HandelTask(taskType string) {
 	_, _ = MongoDbUtil.InsertTaskLog(&taskLog)
 }
 
-func HandelMessage(message *RedisModel.Task) error {
+func HandleMessage(message *RedisModel.Task) error {
 	switch message.TaskType {
 	case "Submit":
 		if err := submit(message); err != nil {

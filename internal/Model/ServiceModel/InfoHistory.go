@@ -2,9 +2,9 @@ package ServiceModel
 
 type InfoHistoryParameter struct {
 	//用户唯一标识
-	OpenId string `form:"openId" json:"openId" binding:"required"`
+	OpenId string `json:"openId" binding:"required"`
 	//视频唯一标识
-	VideoId string `form:"openId" json:"videoId" binding:"required"`
+	VideoId string `json:"videoId" binding:"required"`
 }
 
 type InfoHistoryResponse struct {

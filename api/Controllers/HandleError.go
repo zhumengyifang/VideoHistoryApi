@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func handelError(c *gin.Context, responseBody ServiceModel.ResponseBody) {
+func handleError(c *gin.Context, responseBody ServiceModel.ResponseBody)  {
 	if !responseBody.Header.IsSuccess {
 		c.JSON(http.StatusOK, responseBody)
 		c.Abort()

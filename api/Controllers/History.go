@@ -24,18 +24,18 @@ func History(engine *gin.Engine) {
 */
 func info(c *gin.Context) {
 	postBody := &ServiceModel.PostBody{Body: &ServiceModel.InfoHistoryParameter{}}
-	err := c.Bind(&postBody)
-	if err != nil {
-		handelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertPostBodyErr")))
+	if err := c.ShouldBindJSON(postBody); err != nil {
+		handleError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("please_check_parameter")))
+		return
 	}
 
 	body, ok := (postBody.Body).(*ServiceModel.InfoHistoryParameter)
 	if !ok {
-		handelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertBodyErr")))
+		handleError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertBodyErr")))
 	}
 
 	responseBody := Domain.Info(body)
-	handelError(c, *responseBody)
+	handleError(c, *responseBody)
 }
 
 /**
@@ -43,18 +43,18 @@ func info(c *gin.Context) {
 */
 func submit(c *gin.Context) {
 	postBody := &ServiceModel.PostBody{Body: &ServiceModel.SubmitHistoryParameter{}}
-	err := c.Bind(&postBody)
-	if err != nil {
-		handelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertPostBodyErr")))
+	if err := c.ShouldBindJSON(postBody); err != nil {
+		handleError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("please_check_parameter")))
+		return
 	}
 
 	body, ok := (postBody.Body).(*ServiceModel.SubmitHistoryParameter)
 	if !ok {
-		handelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertBodyErr")))
+		handleError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertBodyErr")))
 	}
 
 	responseBody := Domain.Submit(body)
-	handelError(c, *responseBody)
+	handleError(c, *responseBody)
 }
 
 /**
@@ -62,18 +62,18 @@ func submit(c *gin.Context) {
 */
 func list(c *gin.Context) {
 	postBody := &ServiceModel.PostBody{Body: &ServiceModel.ListHistoryParameter{}}
-	err := c.Bind(&postBody)
-	if err != nil {
-		handelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertPostBodyErr")))
+	if err := c.ShouldBindJSON(postBody); err != nil {
+		handleError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("please_check_parameter")))
+		return
 	}
 
 	body, ok := (postBody.Body).(*ServiceModel.ListHistoryParameter)
 	if !ok {
-		handelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertBodyErr")))
+		handleError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertBodyErr")))
 	}
 
 	responseBody := Domain.List(body)
-	handelError(c, *responseBody)
+	handleError(c, *responseBody)
 }
 
 /**
@@ -81,18 +81,18 @@ func list(c *gin.Context) {
 */
 func del(c *gin.Context) {
 	postBody := &ServiceModel.PostBody{Body: &ServiceModel.DelHistoryParameter{}}
-	err := c.Bind(&postBody)
-	if err != nil {
-		handelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertPostBodyErr")))
+	if err := c.ShouldBindJSON(postBody); err != nil {
+		handleError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("please_check_parameter")))
+		return
 	}
 
 	body, ok := (postBody.Body).(*ServiceModel.DelHistoryParameter)
 	if !ok {
-		handelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertBodyErr")))
+		handleError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertBodyErr")))
 	}
 
 	responseBody := Domain.Del(body)
-	handelError(c, *responseBody)
+	handleError(c, *responseBody)
 }
 
 /**
@@ -100,16 +100,16 @@ func del(c *gin.Context) {
 */
 func clear(c *gin.Context) {
 	postBody := &ServiceModel.PostBody{Body: &ServiceModel.ClearHistoryParameter{}}
-	err := c.Bind(&postBody)
-	if err != nil {
-		handelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertPostBodyErr")))
+	if err := c.ShouldBindJSON(postBody); err != nil {
+		handleError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("please_check_parameter")))
+		return
 	}
 
 	body, ok := (postBody.Body).(*ServiceModel.ClearHistoryParameter)
 	if !ok {
-		handelError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertBodyErr")))
+		handleError(c, *ApiUtil.BuildErrorApiResponse(500, errors.New("ConvertBodyErr")))
 	}
 
 	responseBody := Domain.Clear(body)
-	handelError(c, *responseBody)
+	handleError(c, *responseBody)
 }

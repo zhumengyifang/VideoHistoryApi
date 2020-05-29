@@ -50,14 +50,6 @@ func Submit(body *ServiceModel.SubmitHistoryParameter) *ServiceModel.ResponseBod
 func List(body *ServiceModel.ListHistoryParameter) *ServiceModel.ResponseBody {
 	result := ServiceModel.ListHistoryResponse{PageCount: body.PageCount}
 
-	if body.PageCount <= 0 {
-		body.PageSize = 1
-	}
-
-	if body.PageSize <= 0 {
-		body.PageSize = 20
-	}
-
 	redisInfos, err := RedisUtil.GetAllSlice(body.OpenId)
 	if err != nil && err != redis.ErrNil {
 		return ApiUtil.BuildErrorApiResponse(500, err)
