@@ -46,7 +46,7 @@ type MysqlConfig struct {
 var apiConfig ApiConfig
 
 func init() {
-	file, err := os.Open("./Config.json")
+	file, err := os.Open("Config.json")
 	if err != nil {
 		panic(err)
 	}
