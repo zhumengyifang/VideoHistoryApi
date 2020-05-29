@@ -60,7 +60,7 @@ func List(body *ServiceModel.ListHistoryParameter) (*MysqlModel.HistoryInfo, err
 		return nil, result.Error
 	}
 
-	sql := "select videoId, useTime, submitDateTime, isDel, title, coverUrl, submitDateTime from videoHistories  where userId = ? and isDel=0 order by submitDateTime desc limit ?,?;"
+	sql := "select videoId, useTime, submitDateTime, isDel, title, coverUrl, submitDateTime from videoHistories  where userId = ? and isDel=0 order by userId,isDel,submitDateTime desc limit ?,?;"
 	result = db.Raw(sql, historyInfo.Id, (body.PageCount-1)*body.PageSize, body.PageSize).Scan(&historyInfo.VideosHistories)
 	if result.Error != nil {
 		return nil, result.Error

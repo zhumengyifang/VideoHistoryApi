@@ -11,6 +11,7 @@ create table videoHistories
     submitDateTime datetime,
     created_at     datetime,
     updated_at     datetime,
-    deleted_at     datetime,
-    foreign key (userId) references historyInfo (id)
+    deleted_at     datetime
 );
+
+create index  id_userId_videoId_isDel  on videoHistories(userId,videoId,isDel,submitDateTime);
