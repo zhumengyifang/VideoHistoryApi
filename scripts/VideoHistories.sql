@@ -14,4 +14,4 @@ create table videoHistories
     deleted_at     datetime
 );
 
-create index  id_userId_videoId_isDel  on videoHistories(userId,videoId,isDel,submitDateTime);
+create index id_userId_isDel_submitDataTime on videoHistories (userId, isDel, submitDateTime);
