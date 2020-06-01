@@ -36,12 +36,12 @@ func Info(body *ServiceModel.InfoHistoryParameter) (*MysqlModel.HistoryInfo, err
 	}
 
 	historyInfo := MysqlModel.HistoryInfo{}
-	result := db.Find(&historyInfo, "openId=?", body.OpenId)
+	result := db.Select("id,openId,authorName").Find(&historyInfo, "openId=?", body.OpenId)
 	if result.Error != nil {
 		return nil, result.Error
 	}
 
-	result = db.Find(&historyInfo.VideoHistories, "userId=? and videoId=? and isDel=0", historyInfo.Id, body.VideoId)
+	result = db.Select("videoId, useTime, submitDateTime, isDel, title, coverUrl, submitDateTime").Find(&historyInfo.VideoHistories, "userId=? and videoId=? and isDel=0", historyInfo.Id, body.VideoId)
 	if result.Error != nil {
 		return nil, result.Error
 	}
@@ -55,7 +55,7 @@ func List(body *ServiceModel.ListHistoryParameter) (*MysqlModel.HistoryInfo, err
 	}
 
 	historyInfo := MysqlModel.HistoryInfo{}
-	result := db.Find(&historyInfo, "openId=?", body.OpenId)
+	result := db.Select("id,openId,authorName").Find(&historyInfo, "openId=?", body.OpenId)
 	if result.Error != nil {
 		return nil, result.Error
 	}
