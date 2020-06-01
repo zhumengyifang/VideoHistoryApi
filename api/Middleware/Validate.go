@@ -1,4 +1,4 @@
-package api
+package Middleware
 
 import (
 	"gindemo/internal/Config"
@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func validate() gin.HandlerFunc {
+func Validate() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if Config.GetAPIBearerToken() != c.Request.Header.Get("Authorization") {
 			c.JSON(http.StatusUnauthorized, nil)

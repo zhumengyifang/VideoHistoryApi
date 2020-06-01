@@ -1,0 +1,240 @@
+definitions:
+  ServiceModel.ClearHistoryParameter:
+    properties:
+      openId:
+        type: string
+    required:
+    - openId
+    type: object
+  ServiceModel.DelHistoryParameter:
+    properties:
+      openId:
+        type: string
+      videoIds:
+        items:
+          type: string
+        type: array
+    required:
+    - openId
+    - videoIds
+    type: object
+  ServiceModel.DelHistoryResponse:
+    properties:
+      deleteInfo:
+        additionalProperties:
+          type: boolean
+        type: object
+      openId:
+        type: string
+    type: object
+  ServiceModel.InfoHistoryParameter:
+    properties:
+      openId:
+        type: string
+      videoId:
+        type: string
+    required:
+    - openId
+    - videoId
+    type: object
+  ServiceModel.InfoHistoryResponse:
+    properties:
+      authorName:
+        type: string
+      coverUrl:
+        type: string
+      openId:
+        type: string
+      title:
+        items:
+          type: string
+        type: array
+      useTime:
+        type: integer
+      videoId:
+        type: string
+    type: object
+  ServiceModel.ListHistoryParameter:
+    properties:
+      openId:
+        type: string
+      pageCount:
+        type: integer
+      pageSize:
+        type: integer
+    required:
+    - openId
+    type: object
+  ServiceModel.ListHistoryResponse:
+    properties:
+      pageCount:
+        type: integer
+      pageSize:
+        type: integer
+      videos:
+        items:
+          $ref: '#/definitions/ServiceModel.InfoHistoryResponse'
+        type: array
+    type: object
+  ServiceModel.PostBody:
+    properties:
+      body:
+        type: object
+      header:
+        type: Header
+    required:
+    - body
+    - header
+    type: object
+  ServiceModel.SubmitHistoryParameter:
+    properties:
+      authorName:
+        type: string
+      coverUrl:
+        type: string
+      openId:
+        type: string
+      title:
+        items:
+          type: string
+        type: array
+      useTime:
+        type: integer
+      videoId:
+        type: string
+    required:
+    - openId
+    - useTime
+    - videoId
+    type: object
+host: api.golangxiaoyu.com/swagger/index.html
+info:
+  contact:
+    email: wangjiayuzh@163.com
+    name: jiayu.Wang
+  description: Video History Info.
+  license: {}
+  title: VideoHistory
+  version: "1.0"
+paths:
+  /history/clear:
+    post:
+      consumes:
+      - application/json
+      description: clear Video history Info
+      parameters:
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/ServiceModel.ClearHistoryParameter'
+      produces:
+      - application/json
+      responses:
+        "200": {}
+      security:
+      - Bearer: []
+      summary: clear
+      tags:
+      - history
+  /history/del:
+    post:
+      consumes:
+      - application/json
+      description: del Video history Info
+      parameters:
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/ServiceModel.DelHistoryParameter'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ServiceModel.DelHistoryResponse'
+      security:
+      - Bearer: []
+      summary: del
+      tags:
+      - history
+  /history/info:
+    post:
+      consumes:
+      - application/json
+      description: get Video history Info
+      parameters:
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/ServiceModel.PostBody'
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/ServiceModel.InfoHistoryParameter'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ServiceModel.InfoHistoryResponse'
+      security:
+      - Bearer: []
+      summary: info
+      tags:
+      - history
+  /history/list:
+    post:
+      consumes:
+      - application/json
+      description: get Video history Infos
+      parameters:
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/ServiceModel.ListHistoryParameter'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ServiceModel.ListHistoryResponse'
+      security:
+      - Bearer: []
+      summary: list
+      tags:
+      - history
+  /history/submit:
+    post:
+      consumes:
+      - application/json
+      description: submit Video history Info
+      parameters:
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/ServiceModel.SubmitHistoryParameter'
+      produces:
+      - application/json
+      responses:
+        "200": {}
+      security:
+      - Bearer: []
+      summary: submit
+      tags:
+      - history
+swagger: "2.0"

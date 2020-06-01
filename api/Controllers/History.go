@@ -3,13 +3,14 @@ package Controllers
 import (
 	"errors"
 	"gindemo/api/ApiUtil"
+	"gindemo/api/Middleware"
 	"gindemo/internal/Domain"
 	"gindemo/internal/Model/ServiceModel"
 	"github.com/gin-gonic/gin"
 )
 
 func History(engine *gin.Engine) {
-	historyGroup := engine.Group("/history")
+	historyGroup := engine.Group("/history", Middleware.Validate(), Middleware.Logger())
 	{
 		historyGroup.POST("/info", info)
 		historyGroup.POST("/submit", submit)
@@ -19,9 +20,15 @@ func History(engine *gin.Engine) {
 	}
 }
 
-/**
-历史详细信息
-*/
+// @Summary info
+// @Description get Video history Info
+// @Tags history
+// @Security Bearer
+// @Accept json
+// @Produce  json
+// @Param body body ServiceModel.InfoHistoryParameter true "body"
+// @Success 200 {object} ServiceModel.InfoHistoryResponse
+// @Router /history/info [post]
 func info(c *gin.Context) {
 	postBody := &ServiceModel.PostBody{Body: &ServiceModel.InfoHistoryParameter{}}
 	if err := c.ShouldBindJSON(postBody); err != nil {
@@ -38,9 +45,15 @@ func info(c *gin.Context) {
 	handleError(c, *responseBody)
 }
 
-/**
-提交历史信息
-*/
+// @Summary submit
+// @Description submit Video history Info
+// @Tags history
+// @Security Bearer
+// @Accept json
+// @Produce  json
+// @Param body body ServiceModel.SubmitHistoryParameter true "body"
+// @Success 200
+// @Router /history/submit [post]
 func submit(c *gin.Context) {
 	postBody := &ServiceModel.PostBody{Body: &ServiceModel.SubmitHistoryParameter{}}
 	if err := c.ShouldBindJSON(postBody); err != nil {
@@ -57,9 +70,15 @@ func submit(c *gin.Context) {
 	handleError(c, *responseBody)
 }
 
-/**
-历史分页
-*/
+// @Summary list
+// @Description get Video history Infos
+// @Tags history
+// @Security Bearer
+// @Accept json
+// @Produce  json
+// @Param body body ServiceModel.ListHistoryParameter true "body"
+// @Success 200 {object} ServiceModel.ListHistoryResponse
+// @Router /history/list [post]
 func list(c *gin.Context) {
 	postBody := &ServiceModel.PostBody{Body: &ServiceModel.ListHistoryParameter{}}
 	if err := c.ShouldBindJSON(postBody); err != nil {
@@ -76,9 +95,15 @@ func list(c *gin.Context) {
 	handleError(c, *responseBody)
 }
 
-/**
-删除具体的历史信息
-*/
+// @Summary del
+// @Description del Video history Info
+// @Tags history
+// @Security Bearer
+// @Accept json
+// @Produce  json
+// @Param body body ServiceModel.DelHistoryParameter true "body"
+// @Success 200 {object} ServiceModel.DelHistoryResponse
+// @Router /history/del [post]
 func del(c *gin.Context) {
 	postBody := &ServiceModel.PostBody{Body: &ServiceModel.DelHistoryParameter{}}
 	if err := c.ShouldBindJSON(postBody); err != nil {
@@ -95,9 +120,15 @@ func del(c *gin.Context) {
 	handleError(c, *responseBody)
 }
 
-/**
-清空
-*/
+// @Summary clear
+// @Description clear Video history Info
+// @Tags history
+// @Security Bearer
+// @Accept json
+// @Produce  json
+// @Param body body ServiceModel.ClearHistoryParameter true "body"
+// @Success 200
+// @Router /history/clear [post]
 func clear(c *gin.Context) {
 	postBody := &ServiceModel.PostBody{Body: &ServiceModel.ClearHistoryParameter{}}
 	if err := c.ShouldBindJSON(postBody); err != nil {

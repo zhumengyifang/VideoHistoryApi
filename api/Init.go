@@ -16,9 +16,7 @@ api初始化
 */
 func init() {
 	engine := gin.Default()
-
-	engine.Use(validate())
-	engine.Use(logger())
+	engine.Use(gin.Recovery())
 
 	router(engine)
 
