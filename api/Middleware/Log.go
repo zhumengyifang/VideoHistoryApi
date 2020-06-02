@@ -2,8 +2,8 @@ package Middleware
 
 import (
 	"bytes"
+	"gindemo/Task"
 	"gindemo/internal/Model/MongodbModel"
-	"gindemo/internal/MongoDbUtil"
 	"github.com/gin-gonic/gin"
 	"io/ioutil"
 	"time"
@@ -47,7 +47,7 @@ func Logger() gin.HandlerFunc {
 		responseBody := blw.body.String()
 
 		mongoLog := MongodbModel.BuildMongoApiLog(startTime, endTime, latencyTime.Milliseconds(), reqMethod, reqUri, statusCode, clientIP, string(requestBody), responseBody)
-		_, _ = MongoDbUtil.InsertApiLog(mongoLog)
+		Task.LogForApi <- mongoLog
 	}
 }
 

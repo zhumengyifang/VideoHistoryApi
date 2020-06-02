@@ -17,8 +17,8 @@ type MongoApiLog struct {
 	ResponseBody string `json:"response_body"`
 }
 
-func BuildMongoApiLog(startTime time.Time, endTime time.Time, latencyTime int64, reqMethod string, reqUrl string, statusCode int, clientIP string, requestBody string, responseBody string) *MongoApiLog {
-	return &MongoApiLog{
+func BuildMongoApiLog(startTime time.Time, endTime time.Time, latencyTime int64, reqMethod string, reqUrl string, statusCode int, clientIP string, requestBody string, responseBody string) MongoApiLog {
+	return MongoApiLog{
 		StartTime:    startTime,
 		EndTime:      endTime,
 		LatencyTime:  latencyTime,

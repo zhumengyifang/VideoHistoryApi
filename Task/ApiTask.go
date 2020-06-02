@@ -7,7 +7,6 @@ import (
 	"gindemo/internal/Model/MongodbModel"
 	"gindemo/internal/Model/RedisModel"
 	"gindemo/internal/Model/ServiceModel"
-	"gindemo/internal/MongoDbUtil"
 	"gindemo/internal/MysqlUtil"
 	"gindemo/internal/RedisUtil"
 	"github.com/garyburd/redigo/redis"
@@ -41,7 +40,7 @@ func HandleTask(taskType string) {
 	defer func() {
 		if err := recover(); err != nil && err != redis.ErrNil {
 			taskLog.TaskError = (err.(error)).Error()
-			_, _ = MongoDbUtil.InsertTaskLog(&taskLog)
+			LogForTask <- taskLog
 		}
 	}()
 
@@ -65,7 +64,7 @@ func HandleTask(taskType string) {
 	}
 	taskLog.EndTime = time.Now()
 	taskLog.LatencyTime = taskLog.EndTime.Sub(taskLog.StartTime).Milliseconds()
-	_, _ = MongoDbUtil.InsertTaskLog(&taskLog)
+	LogForTask <- taskLog
 }
 
 func HandleMessage(message *RedisModel.Task) error {

@@ -1,0 +1,12 @@
+brew install graphviz
+brew install FlameGraph
+go get github.com/uber/go-torch
+
+//生成pb.gz 文件
+go tool pprof --seconds 20 http://localhost:3000/debug/pprof/goroutine
+
+CPU
+go-torch -u http://localhost:8080/debug/pprof/ -p > profile-local.svg
+
+内存
+go-torch -u http://localhost:8888/debug/pprof/heap -p > heap-local.svg
