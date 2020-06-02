@@ -12,7 +12,7 @@ func RedisConvertInfosServiceModel(parameter []*RedisModel.HistoryInfo) []*Servi
 		return nil
 	}
 
-	var infos []*ServiceModel.InfoHistoryResponse
+	infos := make([]*ServiceModel.InfoHistoryResponse, len(parameter))
 	for _, v := range parameter {
 		infos = append(infos, ConvertInfoServiceModel(v))
 	}

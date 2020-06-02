@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"gindemo/internal/Config"
+	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -16,8 +17,9 @@ api初始化
 */
 func init() {
 	engine := gin.Default()
-	engine.Use(gin.Recovery())
+	pprof.Register(engine)
 
+	engine.Use(gin.Recovery())
 	router(engine)
 
 	srv := &http.Server{
