@@ -1,10 +1,10 @@
 package RedisUtil
 
 import (
-	"encoding/json"
 	"gindemo/internal/Model/RedisModel"
 	"gindemo/internal/Model/ServiceModel"
 	"github.com/garyburd/redigo/redis"
+	"github.com/json-iterator/go"
 )
 
 func TaskBRPOP(taskType string) (*RedisModel.Task, error) {
@@ -36,7 +36,8 @@ func TaskBRPOP(taskType string) (*RedisModel.Task, error) {
 		break
 	}
 
-	if err = json.Unmarshal(value, &result); err != nil {
+	var jsonIterator = jsoniter.ConfigCompatibleWithStandardLibrary
+	if err = jsonIterator.Unmarshal(value, &result); err != nil {
 		return nil, err
 	}
 

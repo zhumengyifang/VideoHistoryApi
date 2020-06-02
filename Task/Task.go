@@ -1,7 +1,6 @@
 package Task
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"gindemo/internal/Config"
@@ -12,6 +11,7 @@ import (
 	"gindemo/internal/MysqlUtil"
 	"gindemo/internal/RedisUtil"
 	"github.com/garyburd/redigo/redis"
+	"github.com/json-iterator/go"
 	"time"
 )
 
@@ -51,7 +51,9 @@ func HandleTask(taskType string) {
 	}
 
 	taskLog.StartTime = time.Now()
-	bytes, err := json.Marshal(message)
+
+	var jsonIterator = jsoniter.ConfigCompatibleWithStandardLibrary
+	bytes, err := jsonIterator.Marshal(message)
 	if err != nil {
 		panic(err)
 	}

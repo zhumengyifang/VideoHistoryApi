@@ -1,7 +1,6 @@
 package Domain
 
 import (
-	"encoding/json"
 	"gindemo/api/ApiUtil"
 	"gindemo/internal/ConvertModel"
 	"gindemo/internal/Model/RedisModel"
@@ -10,6 +9,7 @@ import (
 	"gindemo/internal/RedisUtil"
 	"github.com/garyburd/redigo/redis"
 	"github.com/jinzhu/gorm"
+	"github.com/json-iterator/go"
 	"sort"
 	"time"
 )
@@ -116,7 +116,8 @@ func Clear(body *ServiceModel.ClearHistoryParameter) *ServiceModel.ResponseBody 
 			continue
 		}
 		v.IsDelete = true
-		bytes, err := json.Marshal(v)
+		var jsonIterator = jsoniter.ConfigCompatibleWithStandardLibrary
+		bytes, err := jsonIterator.Marshal(v)
 		if err != nil {
 			continue
 		}
@@ -146,12 +147,14 @@ func Del(body *ServiceModel.DelHistoryParameter) *ServiceModel.ResponseBody {
 
 	isDel := make(map[string][]byte)
 	isSave := make(map[string][]byte)
+
+	var jsonIterator = jsoniter.ConfigCompatibleWithStandardLibrary
 	for _, v := range body.VideoIds {
 		result.DeleteInfo[v] = true
 
 		if _, ok := infos[v]; !ok {
 			save := RedisModel.HistoryInfo{OpenId: body.OpenId, VideoId: v, IsDelete: true, SubmitDate: time.Now()}
-			bytes, err := json.Marshal(save)
+			bytes, err := jsonIterator.Marshal(save)
 			if err != nil {
 				continue
 			}
@@ -164,7 +167,7 @@ func Del(body *ServiceModel.DelHistoryParameter) *ServiceModel.ResponseBody {
 			continue
 		}
 		del.IsDelete = true
-		bytes, err := json.Marshal(del)
+		bytes, err := jsonIterator.Marshal(del)
 		if err != nil {
 			continue
 		}

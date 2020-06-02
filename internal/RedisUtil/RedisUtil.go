@@ -1,12 +1,12 @@
 package RedisUtil
 
 import (
-	"encoding/json"
 	"fmt"
 	"gindemo/internal/Config"
 	"gindemo/internal/Model/RedisModel"
 	"gindemo/internal/Model/ServiceModel"
 	"github.com/garyburd/redigo/redis"
+	"github.com/json-iterator/go"
 	"time"
 )
 
@@ -60,7 +60,8 @@ func SubmitInfo(parameter *RedisModel.HistoryInfo) error {
 	conn := pool.Get()
 	defer conn.Close()
 
-	bytes, err := json.Marshal(parameter)
+	var jsonIterator = jsoniter.ConfigCompatibleWithStandardLibrary
+	bytes, err := jsonIterator.Marshal(parameter)
 	if err != nil {
 		return err
 	}
@@ -82,7 +83,9 @@ func GetInfo(parameter *ServiceModel.InfoHistoryParameter) (*RedisModel.HistoryI
 	}
 
 	result := new(RedisModel.HistoryInfo)
-	if err = json.Unmarshal(v, result); err != nil {
+
+	var jsonIterator = jsoniter.ConfigCompatibleWithStandardLibrary
+	if err = jsonIterator.Unmarshal(v, result); err != nil {
 		return nil, err
 	}
 
@@ -99,9 +102,11 @@ func GetAllMap(key string) (map[string]*RedisModel.HistoryInfo, error) {
 	}
 
 	infos := make(map[string]*RedisModel.HistoryInfo)
+
+	var jsonIterator = jsoniter.ConfigCompatibleWithStandardLibrary
 	for _, v := range values {
 		result := new(RedisModel.HistoryInfo)
-		if err = json.Unmarshal(v.([]uint8), result); err != nil {
+		if err = jsonIterator.Unmarshal(v.([]uint8), result); err != nil {
 			fmt.Println(err)
 		}
 
@@ -121,9 +126,11 @@ func GetAllSlice(key string) ([]*RedisModel.HistoryInfo, error) {
 	}
 
 	var infos []*RedisModel.HistoryInfo
+
+	var jsonIterator = jsoniter.ConfigCompatibleWithStandardLibrary
 	for _, v := range values {
 		result := new(RedisModel.HistoryInfo)
-		if err = json.Unmarshal(v.([]uint8), result); err != nil {
+		if err = jsonIterator.Unmarshal(v.([]uint8), result); err != nil {
 			fmt.Println(err)
 		}
 
@@ -186,7 +193,8 @@ func TaskLPush(task RedisModel.Task) error {
 	conn := pool.Get()
 	defer conn.Close()
 
-	bytes, err := json.Marshal(task)
+	var jsonIterator = jsoniter.ConfigCompatibleWithStandardLibrary
+	bytes, err := jsonIterator.Marshal(task)
 	if err != nil {
 		return err
 	}

@@ -1,8 +1,8 @@
 package Config
 
 import (
-	"encoding/json"
 	"fmt"
+	"github.com/json-iterator/go"
 	"os"
 	"strconv"
 )
@@ -52,7 +52,8 @@ func init() {
 	}
 	defer file.Close()
 
-	decoder := json.NewDecoder(file)
+	var jsonIterator = jsoniter.ConfigCompatibleWithStandardLibrary
+	decoder := jsonIterator.NewDecoder(file)
 	err = decoder.Decode(&apiConfig)
 	if err != nil {
 		fmt.Println("Error:", err)

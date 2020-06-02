@@ -8,6 +8,7 @@ require (
 	github.com/gin-contrib/pprof v1.3.0
 	github.com/gin-gonic/gin v1.6.3
 	github.com/jinzhu/gorm v1.9.12
+	github.com/json-iterator/go v1.1.9
 	github.com/swaggo/gin-swagger v1.2.0
 	github.com/swaggo/swag v1.6.6
 	go.mongodb.org/mongo-driver v1.3.3
