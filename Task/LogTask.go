@@ -10,8 +10,8 @@ var LogForApi chan MongodbModel.MongoApiLog
 var LogForTask chan MongodbModel.MongoTaskLog
 
 func init() {
-	LogForApi = make(chan MongodbModel.MongoApiLog, 50)
-	LogForTask = make(chan MongodbModel.MongoTaskLog, 50)
+	LogForApi = make(chan MongodbModel.MongoApiLog, 100)
+	LogForTask = make(chan MongodbModel.MongoTaskLog, 100)
 
 	go insertApiLog()
 	go insertTaskLog()
